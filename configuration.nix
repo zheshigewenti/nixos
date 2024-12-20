@@ -93,9 +93,7 @@
    git
    gh
    lazygit
-   fcitx5
    neofetch
-   joshuto
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
