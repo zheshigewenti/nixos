@@ -10,16 +10,9 @@
   home.packages = with pkgs;[
     htop
     fcitx5
+    tmux
   ];
 
-  # This value determines the Home Manager release that your
-  # configuration is compatible with. This helps avoid breakage
-  # when a new Home Manager release introduces backwards
-  # incompatible changes.
-  #
-  # You can update Home Manager without changing this value. See
-  # the Home Manager release notes for a list of state version
-  # changes in each release.
   home.stateVersion = "24.11";
 
   # Let Home Manager install and manage itself.
@@ -41,9 +34,19 @@
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
+    initExtra = ''
+# Case-insensitive matching
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
+
+# git branch prompt
+function parse_git_branch() {git branch 2> /dev/null | sed -n -e 's/^\* \(.*\)/[\1]/p'}
+setopt PROMPT_SUBST
+export PROMPT='%F{grey}%n%f %F{cyan}%~%f %F{green}$(parse_git_branch)%f %F{normal}%#%f '
+      '';
   shellAliases = {
     l = "lazygit";
+    n = "neofetch";
     h = "htop";
     ls = "ls --color";
     update = "sudo nixos-rebuild switch --flake .";
@@ -51,6 +54,7 @@
   history = {
     size = 1000;
     path = "${config.xdg.dataHome}/zsh/history";
+    ignoreAllDups = true;
    };
  };
 
