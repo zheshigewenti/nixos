@@ -33,7 +33,7 @@
     enable = true;
     enableCompletion = true;
     autosuggestion.enable = true;
-    syntaxHighlighting.enable = true;
+    syntaxHighlighting.enable = false;
     initExtra = ''
 # Case-insensitive matching
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
@@ -45,9 +45,11 @@ setopt PROMPT_SUBST
 export PROMPT='%F{grey}%n%f %F{cyan}%~%f %F{green}$(parse_git_branch)%f %F{normal}%#%f '
       '';
   shellAliases = {
-    l = "lazygit";
     n = "neofetch";
     h = "htop";
+    vi = "nvim";
+    lg = "lazygit";
+    ld = "lazydocker";
     ls = "ls --color";
     update = "sudo nixos-rebuild switch --flake .";
     };
