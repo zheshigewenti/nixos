@@ -49,6 +49,29 @@
     LC_TIME = "zh_CN.UTF-8";
   };
 
+
+  # 开启输入法支持
+  i18n.inputMethod = {
+    enable = true;
+    type = "fcitx5";
+    fcitx5.addons = with pkgs; [
+      fcitx5-chinese-addons # 基础中文支持（含拼音）
+      fcitx5-rime           # Rime 框架（如果你喜欢小狼毫/中州韵）
+      fcitx5-configtool     # 图形化配置工具
+      fcitx5-gtk            # GTK 程序支持
+    ];
+  };
+
+  # 环境变量：确保输入法在各个桌面环境下正常工作
+  # 如果你使用的是桌面环境（如 GNOME/KDE），NixOS 通常会自动处理，但建议加上以防万一
+  environment.sessionVariables = {
+    GTK_IM_MODULE = "fcitx";
+    QT_IM_MODULE = "fcitx";
+    XMODIFIERS = "@im=fcitx";
+    SDL_IM_MODULE = "fcitx";
+    GLFW_IM_MODULE = "ibus"; # 部分程序使用这个
+  };
+
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
