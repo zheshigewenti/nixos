@@ -21,7 +21,6 @@
     ripgrep     # Neovim 搜索依赖
     fd          # Neovim 文件查找依赖
     lazygit     # 终端 Git UI
-    lazydocker  # 终端 Docker UI
     neofetch    # 系统信息展示
   ];
 
@@ -79,7 +78,7 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true; # 建议开启，提升终端体验
 
-    # 别名设置 [cite: 10]
+    # 别名设置
     shellAliases = {
       n = "neofetch";
       h = "htop";
@@ -89,7 +88,7 @@
       update = "sudo nixos-rebuild switch --flake .";  
     };
 
-    # 历史记录管理 [cite: 12]
+    # 历史记录管理
     history = {
       size = 1000; 
       path = "${config.xdg.dataHome}/zsh/history"; 
