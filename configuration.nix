@@ -63,11 +63,6 @@ i18n.inputMethod = {
     };
   };
 
-  # GNOME 需要安装 kimpanel 扩展才能完美显示输入法浮窗
-  environment.systemPackages = with pkgs; [
-    gnomeExtensions.kimpanel
-  ];
-
   # 环境变量（Wayland 下 Fcitx5 必须）
   environment.sessionVariables = {
     NIX_IM_MODULE = "fcitx";
@@ -137,6 +132,7 @@ google-chrome
   environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #  wget
+    gnomeExtensions.kimpanel
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
