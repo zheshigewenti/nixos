@@ -94,12 +94,13 @@
 git
 neovim
 lazygit
+google-chrome
     #  thunderbird
     ];
   };
 
   # Install firefox.
-  programs.firefox.enable = true;
+  programs.google-chrome.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
