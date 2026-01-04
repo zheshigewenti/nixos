@@ -100,7 +100,7 @@ google-chrome
   };
 
   # Install firefox.
-  programs.firefox-chrome.enable = false;
+  programs.firefox.enable = false;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
