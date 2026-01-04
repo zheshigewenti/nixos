@@ -86,6 +86,7 @@
     isNormalUser = true;
     description = "vincent";
     extraGroups = [ "networkmanager" "wheel" ];
+    shell = pkgs.zsh;
     packages = with pkgs; [
 git
 neovim
