@@ -121,6 +121,27 @@ google-chrome
     ];
   };
 
+  # 字体配置
+  fonts = {
+    packages = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk-sans  # 核心：Google 的中文字体（Sans 为黑体）
+      noto-fonts-cjk-serif # Google 的中文字体（Serif 为宋体）
+      noto-fonts-color-emoji     # 表情符号
+    ];
+
+    # 优化字体渲染（可选，但建议加上）
+    fontconfig = {
+      defaultFonts = {
+        emoji = [ "Noto Color Emoji" ];
+        monospace = [ "Noto Sans Mono CJK SC" ];
+        sansSerif = [ "Noto Sans CJK SC" ];
+        serif = [ "Noto Serif CJK SC" ];
+      };
+    };
+  };
+
+
   # Install firefox.
   programs.firefox.enable = false;
 
@@ -160,6 +181,6 @@ google-chrome
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.05"; # Did you read the comment?
+  system.stateVersion = "25.11"; # Did you read the comment?
 
 }
