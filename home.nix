@@ -6,7 +6,7 @@
   # -----------------------------------------------------------------------------
   home.username = "vincent"; 
   home.homeDirectory = "/home/vincent"; 
-  home.stateVersion = "24.11";  
+  home.stateVersion = "25.11";  
 
   # 让 Home Manager 管理自身
   programs.home-manager.enable = true;
