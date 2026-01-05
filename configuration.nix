@@ -55,7 +55,7 @@ i18n.inputMethod = {
     fcitx5 = {
       waylandFrontend = true; # 开启 Wayland 原生支持
       addons = with pkgs; [
-        fcitx5-chinese-addons   # 拼音、双拼
+	qt6Packages.fcitx5-chinese-addons
         fcitx5-rime             # Rime
         fcitx5-gtk              # GTK 支持
         fcitx5-material-color   # 皮肤（推荐，非常契合 GNOME）
@@ -75,8 +75,8 @@ i18n.inputMethod = {
   services.xserver.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {

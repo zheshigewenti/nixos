@@ -29,12 +29,6 @@
   # 3. 程序详细配置 (声明式)
   # -----------------------------------------------------------------------------
 
-  # Git 配置
-  programs.git = {
-    enable = true;
-    userName = "vincent";
-    userEmail = "dzn1534564656@gmail.com"; 
-  };
 
   # Tmux 配置 (原生逻辑替代插件)
   programs.tmux = {
@@ -97,7 +91,7 @@
     };
 
     # 提示符与额外脚本
-    initExtra = ''
+    initContent = ''
       # 不区分大小写补全 
       zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
