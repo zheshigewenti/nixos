@@ -1,47 +1,35 @@
 { config, pkgs, ... }:
 
 {
-  # -----------------------------------------------------------------------------
-  # 1. 基础用户信息管理
-  # -----------------------------------------------------------------------------
-  home.username = "vincent"; 
+  # 基础用户信息管理
+  home.username = "vincent";
   home.homeDirectory = "/home/vincent"; 
   home.stateVersion = "25.11";  
 
   # 让 Home Manager 管理自身
   programs.home-manager.enable = true;
 
-  # -----------------------------------------------------------------------------
-  # 2. 软件包安装
-  # -----------------------------------------------------------------------------
+  # 用户级软件包安装
   home.packages = with pkgs; [
-    # 核心工具
-    htop
-    fcitx5
-    ripgrep     # Neovim 搜索依赖
-    fd          # Neovim 文件查找依赖
-    lazygit     # 终端 Git UI
+    htop        # 系统监控
+    ripgrep     # 文本搜索 (Neovim 依赖)
+    fd          # 文件查找 (Neovim 依赖)
+    lazygit     # 终端 Git 界面
     neofetch    # 系统信息展示
-    gh
+    gh          # GitHub 命令行工具
   ];
 
-  # -----------------------------------------------------------------------------
-  # 3. 程序详细配置 (声明式)
-  # -----------------------------------------------------------------------------
-
-
-  # Tmux 配置 (原生逻辑替代插件)
+  # Tmux 终端复用器配置
   programs.tmux = {
     enable = true;
-    shortcut = "a";               # 前缀键 C-a
+    shortcut = "a";               # 前缀键改为 Ctrl-a
     baseIndex = 1;                # 窗口编号从 1 开始
-    keyMode = "vi";               # 复制模式使用 vi 键位
+    keyMode = "vi";               # 复制模式使用 vi 快捷键
     mouse = true;                 # 开启鼠标支持
     escapeTime = 0;               # 消除 Esc 延迟
     
-    # 注入你打磨的原生配置和状态栏美化
     extraConfig = ''
-      # 状态栏样式：统一加粗
+      # 状态栏样式美化
       set -g status-position bottom
       set -g status-justify left
       set -g status-style "bg=default"
@@ -49,53 +37,52 @@
       set -g window-status-current-format "#[fg=magenta,bold] #I:#W "
       set -g status-right "#[fg=cyan,bold]%H:%M #[fg=brightblack,nobold]| #[fg=green,bold]%Y-%m-%d "
 
-      # 面板导航 h/j/k/l
+      # 使用 h/j/k/l 在面板间导航
       bind h select-pane -L
       bind j select-pane -D
       bind k select-pane -U
       bind l select-pane -R
 
-      # 保持当前路径拆分
+      # 拆分窗口时保持当前路径
       bind | split-window -h -c "#{pane_current_path}"
       bind - split-window -v -c "#{pane_current_path}"
       unbind '"'
       unbind %
       
-      # 配置重载
-      bind r source-file ~/.config/tmux/tmux.conf \; display-message "Config reloaded!"
+      # 配置文件重载快捷键
+      bind r source-file ~/.config/tmux/tmux.conf \; display-message "配置已重载！"
     '';
   };
 
-  # Zsh 配置
+  # Zsh 终端配置
   programs.zsh = {
     enable = true;
     enableCompletion = true;
     autosuggestion.enable = true;
-    syntaxHighlighting.enable = true; # 建议开启，提升终端体验
+    syntaxHighlighting.enable = true;
 
-    # 别名设置
+    # 命令别名
     shellAliases = {
       n = "neofetch";
       h = "htop";
       vi = "nvim";
       lg = "lazygit";
       ls = "ls --color=auto";
-      update = "sudo nixos-rebuild switch --flake .";  
+      update = "sudo nixos-rebuild switch --flake ."; # 一键更新系统
     };
 
-    # 历史记录管理
+    # 历史记录配置
     history = {
       size = 1000; 
       path = "${config.xdg.dataHome}/zsh/history"; 
       ignoreAllDups = true; 
     };
 
-    # 提示符与额外脚本
+    # 初始化脚本：提示符自定义与 Git 分支显示
     initContent = ''
-      # 不区分大小写补全 
+      # 补全不区分大小写
       zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
-      # Git 分支显示逻辑
       function parse_git_branch() {
         git branch 2> /dev/null | sed -n -e 's/^\* \(.*\)/[\1]/p'
       }
@@ -104,25 +91,18 @@
     '';
   };
 
-  # Neovim 基础设置 (混合模式)
+  # Neovim 编辑器基础配置
   programs.neovim = {
     enable = true;
     defaultEditor = true;
     viAlias = true;
     vimAlias = true;
-    # 建议此处保持为空，通过 home.file 将你现有的 init.lua 挂载进来
   };
 
-  # -----------------------------------------------------------------------------
-  # 4. 服务与文件映射 [cite: 5]
-  # -----------------------------------------------------------------------------
+  # GPG 代理服务配置
   services.gpg-agent = {
-    enable = true; # [cite: 5]
-    defaultCacheTtl = 1800; # [cite: 5]
-    enableSshSupport = true; # [cite: 5]
+    enable = true;
+    defaultCacheTtl = 1800; 
+    enableSshSupport = true;
   };
-
-  # 映射 Neovim 配置目录 (假设你的配置在 flake 同级目录下的 nvim 文件夹)
-  # home.file.".config/nvim".source = ./nvim;
-
 }

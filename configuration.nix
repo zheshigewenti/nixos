@@ -1,40 +1,32 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { config, pkgs, ... }:
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [ # 导入硬件扫描生成的硬件配置文件
       ./hardware-configuration.nix
     ];
 
-  #Flake
+  # 启用 Flake 实验性功能
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
-  #Shell
+  # 启用 Zsh 终端
   programs.zsh.enable = true;
 
-  # Bootloader.
+  # 引导加载程序 (Grub) 配置
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/sda";
   boot.loader.grub.useOSProber = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  # 网络主机名设置
+  networking.hostName = "nixos"; 
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
+  # 启用 NetworkManager 管理网络
   networking.networkmanager.enable = true;
 
-  # Set your time zone.
+  # 设置时区为亚洲/上海
   time.timeZone = "Asia/Shanghai";
 
-  # Select internationalisation properties.
+  # 国际化语言环境设置
   i18n.defaultLocale = "zh_CN.UTF-8";
 
   i18n.extraLocaleSettings = {
@@ -49,45 +41,47 @@
     LC_TIME = "zh_CN.UTF-8";
   };
 
-i18n.inputMethod = {
+  # 输入法配置 (Fcitx5)
+  i18n.inputMethod = {
     enable = true;
     type = "fcitx5";
     fcitx5 = {
       waylandFrontend = true; # 开启 Wayland 原生支持
       addons = with pkgs; [
-	qt6Packages.fcitx5-chinese-addons
-        fcitx5-rime             # Rime
-        fcitx5-gtk              # GTK 支持
-        fcitx5-material-color   # 皮肤（推荐，非常契合 GNOME）
+        kdePackages.fcitx5-chinese-addons # 核心中文插件（含拼音）
+        kdePackages.fcitx5-rime           # Rime 中州韵引擎
+        kdePackages.fcitx5-gtk            # GTK 应用支持
+        fcitx5-material-color             # 皮肤主题
       ];
     };
   };
 
-  # 环境变量（Wayland 下 Fcitx5 必须）
+  # 全局环境变量设置
   environment.sessionVariables = {
-    NIX_IM_MODULE = "fcitx";
     GTK_IM_MODULE = "fcitx";
     QT_IM_MODULE = "fcitx";
     XMODIFIERS = "@im=fcitx";
+    # 显式声明 Rime 数据目录，防止找不到方案
+    RIME_DATA_DIR = "/run/current-system/sw/share/rime-data";
   };
 
-  # Enable the X11 windowing system.
+  # 启用 X11 窗口系统
   services.xserver.enable = true;
 
-  # Enable the GNOME Desktop Environment.
+  # 启用 GNOME 桌面环境
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
 
-  # Configure keymap in X11
+  # X11 键盘布局配置
   services.xserver.xkb = {
     layout = "cn";
     variant = "";
   };
 
-  # Enable CUPS to print documents.
+  # 启用打印服务
   services.printing.enable = true;
 
-  # Enable sound with pipewire.
+  # 启用 Pipewire 音频服务
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -95,42 +89,32 @@ i18n.inputMethod = {
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
   };
 
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # 定义用户帐户
   users.users.vincent = {
     isNormalUser = true;
     description = "vincent";
     extraGroups = [ "networkmanager" "wheel" ];
     shell = pkgs.zsh;
     packages = with pkgs; [
-git
-neovim
-lazygit
-google-chrome
-    #  thunderbird
+      git
+      neovim
+      lazygit
+      google-chrome
     ];
   };
 
-  # 字体配置
+  # 字体配置（解决网页乱码的关键）
   fonts = {
     packages = with pkgs; [
       noto-fonts
-      noto-fonts-cjk-sans  # 核心：Google 的中文字体（Sans 为黑体）
-      noto-fonts-cjk-serif # Google 的中文字体（Serif 为宋体）
-      noto-fonts-color-emoji     # 表情符号
+      noto-fonts-cjk-sans   # Google 中文黑体
+      noto-fonts-cjk-serif  # Google 中文宋体
+      noto-fonts-color-emoji # 彩色表情
     ];
 
-    # 优化字体渲染（可选，但建议加上）
+    # 字体渲染优化与默认映射
     fontconfig = {
       defaultFonts = {
         emoji = [ "Noto Color Emoji" ];
@@ -141,46 +125,15 @@ google-chrome
     };
   };
 
-
-  # Install firefox.
-  programs.firefox.enable = false;
-
-  # Allow unfree packages
+  # 允许安装闭源软件（如 Chrome）
   nixpkgs.config.allowUnfree = true;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
+  # 系统全局软件包
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
-    gnomeExtensions.kimpanel
+    gnomeExtensions.kimpanel # GNOME 输入法托盘图标支持
+    rime-data                # Rime 基础数据包
   ];
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.11"; # Did you read the comment?
-
+  # 系统状态版本，建议保持初次安装时的设定
+  system.stateVersion = "25.11"; 
 }
