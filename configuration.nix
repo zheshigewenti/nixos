@@ -48,9 +48,9 @@
     fcitx5 = {
       waylandFrontend = true; # 开启 Wayland 原生支持
       addons = with pkgs; [
-        kdePackages.fcitx5-chinese-addons # 核心中文插件（含拼音）
-        kdePackages.fcitx5-rime           # Rime 中州韵引擎
-        kdePackages.fcitx5-gtk            # GTK 应用支持
+       qt6Packages.fcitx5-chinese-addons # 核心中文插件（含拼音）
+        fcitx5-rime           # Rime 中州韵引擎
+        fcitx5-gtk            # GTK 应用支持
         fcitx5-material-color             # 皮肤主题
       ];
     };
