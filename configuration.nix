@@ -9,6 +9,9 @@
   # 启用 Flake 实验性功能
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
+  # 开启优化存储，自动合并相同文件
+  nix.settings.auto-optimise-store = true;
+
   # 启用 Zsh 终端
   programs.zsh.enable = true;
 
@@ -22,6 +25,13 @@
 
   # 启用 NetworkManager 管理网络
   networking.networkmanager.enable = true;
+
+  # 防火墙设置
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 22 80 443 ]; # 根据需要开放
+    # checkReversePath = false; # 局域网信任
+  };
 
   # 设置时区为亚洲/上海
   time.timeZone = "Asia/Shanghai";
@@ -138,11 +148,9 @@
   nix.gc = {
     automatic = true;      # 开启自动清理
     dates = "daily";      # 每天执行一次 
-    options = "--delete-older-than 7d"; # 清理超过30天前的旧版本
+    options = "--delete-older-than 7d"; # 清理超过7天前的旧版本
   };
 
-  # 开启优化存储，自动合并相同文件
-  nix.settings.auto-optimise-store = true;
 
   # 系统状态版本，建议保持初次安装时的设定
   system.stateVersion = "25.11"; 
