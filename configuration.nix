@@ -6,9 +6,28 @@
       ./hardware-configuration.nix
     ];
 
-  # 独显设置
-  services.xserver.videoDrivers = [ "nvidia" ];
-  hardware.graphics.enable = true;
+  # # 独显设置
+  # services.xserver.videoDrivers = [ "nvidia" ];
+  # hardware.nvidia = {
+  #   modesetting.enable = true;
+  #   powerManagement.enable = false; # 如果笔记本合盖有问题，设为 true
+  #   powerManagement.finegrained = false;
+  #
+  #   # 解决你报错的关键行
+  #   open = true; 
+  #
+  #   # 启用设置界面
+  #   nvidiaSettings = true;
+  #
+  #   # 选择驱动版本（通常默认即可，除非有特殊需求）
+  #   package = config.boot.kernelPackages.nvidiaPackages.stable;
+  # };
+  #
+  # # 开启硬件加速
+  # hardware.graphics = {
+  #   enable = true;
+  #   enable32Bit = true;
+  # };
 
   # 启用 Flake 实验性功能
   nix.settings.experimental-features = ["nix-command" "flakes"];
