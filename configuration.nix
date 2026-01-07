@@ -134,6 +134,16 @@
     rime-data                # Rime 基础数据包
   ];
 
+  #自动清理设置
+  nix.gc = {
+    automatic = true;      # 开启自动清理
+    dates = "daily";      # 每天执行一次 
+    options = "--delete-older-than 7d"; # 清理超过30天前的旧版本
+  };
+
+  # 开启优化存储，自动合并相同文件
+  nix.settings.auto-optimise-store = true;
+
   # 系统状态版本，建议保持初次安装时的设定
   system.stateVersion = "25.11"; 
 }
