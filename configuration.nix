@@ -6,6 +6,10 @@
       ./hardware-configuration.nix
     ];
 
+  # 独显设置
+  services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.graphics.enable = true;
+
   # 启用 Flake 实验性功能
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
@@ -135,8 +139,11 @@
     };
   };
 
-  # 允许安装闭源软件（如 Chrome）
+  # 允许安装闭源软件（如Chrome）
   nixpkgs.config.allowUnfree = true;
+
+  # 允许加载闭源固件（如WiFi驱动）
+  hardware.enableAllFirmware = true;
 
   # 系统全局软件包
   environment.systemPackages = with pkgs; [
