@@ -82,7 +82,6 @@
       waylandFrontend = true; # 开启 Wayland 原生支持
       addons = with pkgs; [
        qt6Packages.fcitx5-chinese-addons # 核心中文插件（含拼音）
-        fcitx5-rime           # Rime 中州韵引擎
         fcitx5-gtk            # GTK 应用支持
         fcitx5-material-color             # 皮肤主题
       ];
@@ -94,8 +93,6 @@
     GTK_IM_MODULE = "fcitx";
     QT_IM_MODULE = "fcitx";
     XMODIFIERS = "@im=fcitx";
-    # 显式声明 Rime 数据目录，防止找不到方案
-    RIME_DATA_DIR = "/run/current-system/sw/share/rime-data";
   };
 
   # 启用 X11 窗口系统
@@ -167,7 +164,6 @@
   # 系统全局软件包
   environment.systemPackages = with pkgs; [
     gnomeExtensions.kimpanel # GNOME 输入法托盘图标支持
-    rime-data                # Rime 基础数据包
   ];
 
   #自动清理设置
