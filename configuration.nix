@@ -23,11 +23,18 @@
   #   package = config.boot.kernelPackages.nvidiaPackages.stable;
   # };
   #
-  # # 开启硬件加速
-  # hardware.graphics = {
-  #   enable = true;
-  #   enable32Bit = true;
-  # };
+  # 开启硬件加速
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
+
+  # Steam
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true; # 为远程传输开启端口
+    dedicatedServer.openFirewall = true;
+  };
 
   # 启用 Flake 实验性功能
   nix.settings.experimental-features = ["nix-command" "flakes"];
