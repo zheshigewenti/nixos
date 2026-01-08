@@ -197,7 +197,7 @@
     services.nextcloud = {
       enable = true;
       hostName = "localhost"; # 建议先用 localhost 跑通，后续再改域名
-      package = pkgs.nextcloud31; # 遵循系统建议使用 v31
+      package = pkgs.nextcloud32; # 遵循系统建议使用 v32
       # 强制指定数据库类型
       database.createLocally = true;
       config = {
@@ -211,9 +211,17 @@
         # 修复一些常见的环境警告
         default_phone_region = "CN";
       };
+      settings = {
+    trusted_domains = [ 
+      "localhost" 
+      "100.121.132.90"  # 你的局域网 IP
+      "100.116.135.3"    # 你的 Tailscale IP
+    ];
+  };
     };
     # 3. 启用 Nginx（Nextcloud 依赖它）
     services.nginx.enable = true;
+    services.tailscale.enable = true;
 
   # 系统状态版本，建议保持初次安装时的设定
   system.stateVersion = "25.11"; 
