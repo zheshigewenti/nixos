@@ -62,7 +62,7 @@
   # 防火墙设置
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 22 80 443 ]; # 根据需要开放
+    allowedTCPPorts = [ 22 80 443 445 ]; # 根据需要开放
     # checkReversePath = false; # 局域网信任
   };
 

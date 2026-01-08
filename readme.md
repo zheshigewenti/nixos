@@ -6,6 +6,6 @@ nixos-generate-config --root /mnt #新电脑重新生成hardware-configuration�
 sudo nix flake update #更新lock文件
 sudo nixos-rebuild switch --flake .
 sudo nix-env --list-generations --profile /nix/var/nix/profiles/system #列出nixos当前保留了哪些版本
-sudo nix-env --delete-generations +3 --profile /nix/var/nix/profiles/system #保留最后3个版本
+sudo nix-env --delete-generations +2 --profile /nix/var/nix/profiles/system #保留最后2个版本
 sudo nix-collect-garbage #删除无用的版本
 ```
