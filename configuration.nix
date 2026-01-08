@@ -184,6 +184,36 @@
     options = "--delete-older-than 7d"; # 清理超过7天前的旧版本
   };
 
+  # Nextcloud
+  services.postgresql = {
+      enable = true;
+      ensureDatabases = [ "nextcloud" ];
+      ensureUsers = [{
+        name = "nextcloud";
+        ensureDBOwnership = true;
+      }];
+    };
+    # 2. Nextcloud 核心配置
+    services.nextcloud = {
+      enable = true;
+      hostName = "localhost"; # 建议先用 localhost 跑通，后续再改域名
+      package = pkgs.nextcloud31; # 遵循系统建议使用 v31
+      # 强制指定数据库类型
+      database.createLocally = true;
+      config = {
+        dbtype = "pgsql";
+        adminuser = "admin";
+        # 密码文件路径：我们将它放在 nextcloud 的家目录下，避开权限坑
+        adminpassFile = "/var/lib/nextcloud/pass";
+      };
+      # 自动配置 Nginx 虚拟主机
+      extraOptions = {
+        # 修复一些常见的环境警告
+        default_phone_region = "CN";
+      };
+    };
+    # 3. 启用 Nginx（Nextcloud 依赖它）
+    services.nginx.enable = true;
 
   # 系统状态版本，建议保持初次安装时的设定
   system.stateVersion = "25.11"; 
