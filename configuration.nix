@@ -38,10 +38,13 @@
   # 启用 Zsh 终端
   programs.zsh.enable = true;
 
-  # 引导加载程序 (Grub) 配置
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
-  boot.loader.grub.useOSProber = true;
+  # Bootloader
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  # # 引导加载程序 (Grub) 配置
+  # boot.loader.grub.enable = true;
+  # boot.loader.grub.device = "/dev/sda";
+  # boot.loader.grub.useOSProber = true;
 
   # 网络主机名设置
   networking.hostName = "nixos"; 
@@ -132,6 +135,7 @@
       neovim
       lazygit
       google-chrome
+      clash-verge-rev
     ];
   };
 
