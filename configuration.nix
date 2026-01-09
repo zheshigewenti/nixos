@@ -142,6 +142,7 @@
       lazygit
       google-chrome
       clash-verge-rev
+      wechat-uos
     ];
   };
 

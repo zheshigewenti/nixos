@@ -89,6 +89,7 @@
       setopt PROMPT_SUBST
       export PROMPT='%F{grey}%n%f %F{cyan}%~%f %F{green}$(parse_git_branch)%f %F{normal}%#%f '
 
+      # 设置代理
       export http_proxy=http://127.0.0.1:7897
       export https_proxy=http://127.0.0.1:7897
     '';
@@ -98,7 +99,6 @@
 programs.nixvim = {
     enable = true;
     defaultEditor = true; # 设置为系统默认编辑器
-    plugins.web-devicons.enable = false; # 明确启用图标插件
     version.enableNixpkgsReleaseCheck = false; #消除版本不匹配警告
 
     # 基础设置 (opts)
@@ -118,7 +118,8 @@ programs.nixvim = {
     plugins = {
       # 语法高亮
       treesitter.enable = true;
-
+      # 明确关闭图标插件
+      web-devicons.enable = false; 
       # 模糊搜索
       telescope = {
         enable = true;
@@ -151,6 +152,8 @@ programs.nixvim = {
           { name = "buffer"; }
         ];
       };
+       extraConfigLua = ''
+         '';
     };
 
     # 全局变量 (如 Leader 键)
