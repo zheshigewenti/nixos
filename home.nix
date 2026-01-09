@@ -128,7 +128,7 @@ programs.nixvim = {
         };
       };
 
-      # LSP (语言服务) - 这是 IDE 的灵魂
+      # LSP (语言服务)
       lsp = {
         enable = true;
         servers = {
@@ -142,7 +142,7 @@ programs.nixvim = {
         };
       };
       
-      # 自动补全 (nixvim 自动处理 cmp 相关依赖)
+      # 自动补全 (cmp 相关依赖)
       cmp = {
         enable = true;
         settings.sources = [
@@ -152,16 +152,6 @@ programs.nixvim = {
         ];
       };
     };
-
-    #  快捷键设置
-    keymaps = [
-      {
-        mode = "n";
-        key = "<leader>e";
-        action = ":Neotree toggle<CR>";
-        options.silent = true;
-      }
-    ];
 
     # 全局变量 (如 Leader 键)
     globals.mapleader = " ";
