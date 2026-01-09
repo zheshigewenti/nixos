@@ -98,6 +98,8 @@
 programs.nixvim = {
     enable = true;
     defaultEditor = true; # 设置为系统默认编辑器
+    plugins.web-devicons.enable = false; # 明确启用图标插件
+    version.enableNixpkgsReleaseCheck = false; #消除版本不匹配警告
 
     # 基础设置 (opts)
     opts = {
