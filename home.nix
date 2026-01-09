@@ -88,15 +88,81 @@
       }
       setopt PROMPT_SUBST
       export PROMPT='%F{grey}%n%f %F{cyan}%~%f %F{green}$(parse_git_branch)%f %F{normal}%#%f '
+
+      export http_proxy=http://127.0.0.1:7890
+      export https_proxy=http://127.0.0.1:7890
     '';
   };
 
   # Neovim 编辑器基础配置
-  programs.neovim = {
+programs.nixvim = {
     enable = true;
-    defaultEditor = true;
-    viAlias = true;
-    vimAlias = true;
+    defaultEditor = true; # 设置为系统默认编辑器
+
+    # 基础设置 (opts)
+    opts = {
+      number = true;         # 显示行号
+      relativenumber = true; # 相对行号
+      shiftwidth = 2;        # 缩进
+      softtabstop = 2;
+      expandtab = true;
+      smartindent = true;
+      ignorecase = true;     # 搜索忽略大小写
+      mouse = "a";           # 开启鼠标
+    };
+
+
+    # 插件配置 (Plugins)
+    plugins = {
+      # 语法高亮
+      treesitter.enable = true;
+
+      # 模糊搜索
+      telescope = {
+        enable = true;
+        keymaps = {
+          "<leader>ff" = "find_files";
+          "<leader>fg" = "live_grep";
+        };
+      };
+
+      # LSP (语言服务) - 这是 IDE 的灵魂
+      lsp = {
+        enable = true;
+        servers = {
+          pyright.enable = true;    # Python
+          nil_ls.enable = true;     # Nix
+          rust_analyzer = {         # Rust
+            enable = true;
+            installCargo = true;
+            installRustc = true;
+          };
+        };
+      };
+      
+      # 自动补全 (nixvim 自动处理 cmp 相关依赖)
+      cmp = {
+        enable = true;
+        settings.sources = [
+          { name = "nvim_lsp"; }
+          { name = "path"; }
+          { name = "buffer"; }
+        ];
+      };
+    };
+
+    #  快捷键设置
+    keymaps = [
+      {
+        mode = "n";
+        key = "<leader>e";
+        action = ":Neotree toggle<CR>";
+        options.silent = true;
+      }
+    ];
+
+    # 全局变量 (如 Leader 键)
+    globals.mapleader = " ";
   };
 
   # GPG 代理服务配置
