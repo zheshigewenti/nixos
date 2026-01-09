@@ -89,8 +89,8 @@
       setopt PROMPT_SUBST
       export PROMPT='%F{grey}%n%f %F{cyan}%~%f %F{green}$(parse_git_branch)%f %F{normal}%#%f '
 
-      export http_proxy=http://127.0.0.1:7890
-      export https_proxy=http://127.0.0.1:7890
+      export http_proxy=http://127.0.0.1:7897
+      export https_proxy=http://127.0.0.1:7897
     '';
   };
 
