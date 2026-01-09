@@ -9,6 +9,10 @@
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs: {
@@ -18,11 +22,16 @@
       specialArgs = { inherit inputs; };
       modules = [
         ./configuration.nix
-        # 整合 Home-Manager 模块到系统配置中
-        home-manager.nixosModules.home-manager {
+        home-manager.nixosModules.home-manager
+        {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.users.vincent = import ./home.nix;
+          home-manager.users.vincent = {
+            imports = [
+              ./home.nix
+              inputs.nixvim.homeModules.nixvim
+            ];
+          };
         }
       ];
     };
