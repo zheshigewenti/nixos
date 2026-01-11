@@ -93,7 +93,6 @@
       addons = with pkgs; [
        qt6Packages.fcitx5-chinese-addons # 核心中文插件（含拼音）
         fcitx5-gtk            # GTK 应用支持
-        fcitx5-material-color             # 皮肤主题
       ];
     };
   };
