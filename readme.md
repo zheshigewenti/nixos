@@ -9,4 +9,5 @@ sudo nix-env --list-generations --profile /nix/var/nix/profiles/system #列出ni
 sudo nix-env --delete-generations +2 --profile /nix/var/nix/profiles/system #保留最后2个版本
 sudo nix-collect-garbage #删除无用的版本
 sudo nix-store --gc #清理所有不再被任何版本引用的包
+curl -L https://raw.githubusercontent.com/zheshigewenti/nixos/master/install.sh | bash #一键部署nixos
 ```
