@@ -143,6 +143,8 @@
       clash-verge-rev
       wechat-uos
       wpsoffice-cn
+      ffmpeg-full
+      shotcut
     ];
   };
 
