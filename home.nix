@@ -152,8 +152,8 @@ programs.nixvim = {
           { name = "buffer"; }
         ];
       };
-       extraConfigLua = ''
-         '';
+       # extraConfigLua = ''
+       #        '';
     };
 
     # 全局变量 (如 Leader 键)
