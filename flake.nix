@@ -110,6 +110,7 @@
               ignorecase = true;
             };
             plugins = {
+              web-devicons.enable = true;
               treesitter.enable = true;
               telescope.enable = true;
               lsp = {
