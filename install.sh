@@ -9,7 +9,7 @@ fi
 
 # 2. 变量定义
 REPO="https://github.com/zheshigewenti/nixos.git"
-DEST="$HOME/nixos-config"
+DEST="$HOME/nixos"
 
 # 3. 克隆仓库
 if [ ! -d "$DEST" ]; then
