@@ -1,38 +1,172 @@
 {
-  description = "Vincent 的 NixOS Flake 配置文件";
+  description = "NixOS Config";
 
   inputs = {
-    # 使用 NixOS 25.11 稳定版分支
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
-    # 用户级配置管理器
-    home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # 使用 Nixvim
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs: {
-    # 'nixos' 必须与 configuration.nix 中的 networking.hostName 一致
+  outputs = { self, nixpkgs, nixvim, ... }: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs = { inherit inputs; };
       modules = [
-        ./configuration.nix
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.users.vincent = {
-            imports = [
-              ./home.nix
-              inputs.nixvim.homeModules.nixvim
+        # 引用由脚本自动生成的硬件配置文件
+        ./hardware-configuration.nix
+        nixvim.nixosModules.nixvim
+        
+        ({ pkgs, config, ... }: {
+          # --- 1. 核心引导与系统设置 ---
+          boot.loader.systemd-boot.enable = true;
+          boot.loader.efi.canTouchEfiVariables = true;
+          networking.hostName = "nixos";
+          networking.networkmanager.enable = true;
+          time.timeZone = "Asia/Shanghai";
+          i18n.defaultLocale = "zh_CN.UTF-8";
+          nix.settings.experimental-features = ["nix-command" "flakes"];
+          nixpkgs.config.allowUnfree = true;
+
+          # --- 2. 桌面环境 (GNOME) 与 硬件加速 ---
+          services.xserver.enable = true;
+          services.displayManager.gdm.enable = true;
+          services.desktopManager.gnome.enable = true;
+          hardware.graphics = {
+            enable = true;
+            enable32Bit = true;
+          };
+
+          # --- 3. 用户管理与软件清单 ---
+          users.users.vincent = {
+            isNormalUser = true;
+            description = "vincent";
+            extraGroups = [ "networkmanager" "wheel" ];
+            shell = pkgs.zsh;
+            packages = with pkgs; [
+              google-chrome
+              clash-verge-rev
+              wechat-uos 
+              wpsoffice-cn
+              ffmpeg-full 
+              shotcut 
+              zotero
+              git
+              lazygit 
+              gh
+              htop 
+              ripgrep
+              fd 
+              neofetch
+              steam
             ];
           };
-        }
+
+          # --- 4. Zsh 终端配置  ---
+          programs.zsh = {
+            enable = true;
+            enableCompletion = true;
+            autosuggestions.enable = true;
+            syntaxHighlighting.enable = true;
+            shellAliases = {
+              n = "neofetch"; h = "htop"; vi = "nvim"; lg = "lazygit";
+              ls = "ls --color=auto";
+              update = "sudo nixos-rebuild switch --flake .#nixos";
+            };
+            promptInit = ''
+              # 简单的提示符与代理设置
+              export http_proxy=http://127.0.0.1:7897
+              export https_proxy=http://127.0.0.1:7897
+              export PROMPT='%F{cyan}%n@%m%f:%F{blue}%~%f$ '
+            '';
+          };
+
+          # --- 5. Tmux 配置 ---
+          programs.tmux = {
+            enable = true;
+            shortcut = "a";
+            keyMode = "vi";
+            extraConfig = ''
+              set -g mouse on
+              set -g status-style "bg=default"
+              bind h select-pane -L
+              bind j select-pane -D
+              bind k select-pane -U
+              bind l select-pane -R
+            '';
+          };
+
+          # --- 6. Nixvim 配置  ---
+          programs.nixvim = {
+            enable = true;
+            defaultEditor = true;
+            opts = {
+              number = true;
+              relativenumber = true;
+              shiftwidth = 2;
+              expandtab = true;
+              mouse = "a";
+              ignorecase = true;
+            };
+            plugins = {
+              treesitter.enable = true;
+              telescope.enable = true;
+              lsp = {
+                enable = true;
+                servers = {
+                  pyright.enable = true;
+                  nil_ls.enable = true;
+                };
+              };
+              cmp = {
+                enable = true;
+                settings.sources = [
+                  { name = "nvim_lsp"; }
+                  { name = "path"; }
+                  { name = "buffer"; }
+                ];
+              };
+            };
+          };
+
+          # --- 7. 字体、中文支持与输入法 ---
+          i18n.inputMethod = {
+            enable = true;
+            type = "fcitx5";
+            fcitx5.waylandFrontend = true;
+            fcitx5.addons = with pkgs; [ qt6Packages.fcitx5-chinese-addons fcitx5-gtk ];
+          };
+
+          fonts = {
+            packages = with pkgs; [ 
+              noto-fonts noto-fonts-cjk-sans noto-fonts-color-emoji 
+            ];
+            fontconfig.defaultFonts = {
+              serif = [ "Noto Serif CJK SC" ];
+              sansSerif = [ "Noto Sans CJK SC" ];
+              monospace = [ "Noto Sans Mono CJK SC" ];
+            };
+          };
+
+          # 全局环境变量
+          environment.sessionVariables = {
+            GTK_IM_MODULE = "fcitx";
+            QT_IM_MODULE = "fcitx";
+            XMODIFIERS = "@im=fcitx";
+          };
+
+          # --- 8. 系统自动化与清理 ---
+          nix.gc = {
+            automatic = true;
+            dates = "daily";
+            options = "--delete-older-than 7d";
+          };
+          
+          networking.firewall.allowedTCPPorts = [ 22 7897 443 80 ];
+
+          system.stateVersion = "25.11"; 
+        })
       ];
     };
   };
