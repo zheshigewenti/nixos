@@ -100,6 +100,35 @@
           # --- 6. Nixvim 配置  ---
           programs.nixvim = {
             enable = true;
+            extraConfigLua = ''
+              -- 存储输入法状态的变量
+              local fcitx_state = 1
+
+              -- 离开插入模式：记录当前状态并切回英文
+              vim.api.nvim_create_autocmd("InsertLeave", {
+                pattern = "*",
+                callback = function()
+                  -- 检查当前状态 (2 表示中文, 1 表示英文)
+                  local status = tonumber(io.popen("fcitx5-remote"):read("*all"))
+                  if status == 2 then
+                    fcitx_state = 2
+                    os.execute("fcitx5-remote -c") -- 切回英文
+                  else
+                    fcitx_state = 1
+                  end
+                end,
+              })
+
+              -- 进入插入模式：如果上次是中文，则恢复中文
+              vim.api.nvim_create_autocmd("InsertEnter", {
+                pattern = "*",
+                callback = function()
+                  if fcitx_state == 2 then
+                    os.execute("fcitx5-remote -o") -- 恢复中文
+                  end
+                end,
+              })
+            '';
             defaultEditor = true;
             opts = {
               number = true;
