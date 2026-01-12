@@ -12,7 +12,7 @@
 
   outputs = { self, nixpkgs, nixvim, ... }: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
+      system = "x86_64-linux"; # aarch64-linux
       modules = [
         # 引用由脚本自动生成的硬件配置文件
         ./hardware-configuration.nix
