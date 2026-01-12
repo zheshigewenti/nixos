@@ -75,9 +75,14 @@
               update = "sudo nixos-rebuild switch --flake .#nixos";
             };
             promptInit = ''
-              # 简单的提示符与代理设置
+              # 代理设置
               export http_proxy=http://127.0.0.1:7897
               export https_proxy=http://127.0.0.1:7897
+              # 输入法设置
+              export GTK_IM_MODULE="fcitx"
+              export QT_IM_MODULE="fcitx"
+              export XMODIFIERS="@im=fcitx"
+              # 提示符设置
               export PROMPT='%F{cyan}%n@%m%f:%F{blue}%~%f$ '
             '';
           };
@@ -184,13 +189,6 @@
               sansSerif = [ "Noto Sans CJK SC" ];
               monospace = [ "Noto Sans Mono CJK SC" ];
             };
-          };
-
-          # 全局环境变量
-          environment.sessionVariables = {
-            GTK_IM_MODULE = "fcitx";
-            QT_IM_MODULE = "fcitx";
-            XMODIFIERS = "@im=fcitx";
           };
 
           # --- 8. 系统自动化与清理 ---
