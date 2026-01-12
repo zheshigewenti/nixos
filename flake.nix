@@ -100,6 +100,7 @@
           # --- 6. Nixvim 配置  ---
           programs.nixvim = {
             enable = true;
+            globals.mapleader = " ";
             extraConfigLua = ''
               -- 存储输入法状态的变量
               local fcitx_state = 1
@@ -139,9 +140,15 @@
               ignorecase = true;
             };
             plugins = {
-              web-devicons.enable = true;
+              web-devicons.enable = false;
               treesitter.enable = true;
-              telescope.enable = true;
+              telescope = {
+                 enable = true;
+                  keymaps = {
+                  "<leader>ff" = "find_files";    # 查找文件
+                  "<leader>fg" = "live_grep";     # 全局搜索文本
+                };
+              };
               lsp = {
                 enable = true;
                 servers = {
