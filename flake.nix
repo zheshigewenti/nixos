@@ -45,6 +45,16 @@
             extraGroups = [ "networkmanager" "wheel" ];
             shell = pkgs.zsh;
             packages = with pkgs; [
+             (texlive.combine {
+               inherit (texlive) 
+                scheme-small 
+                amsmath 
+                cleveref 
+                xecjk 
+                fontspec 
+                filehook
+                xetex;
+              })
               google-chrome
               clash-verge-rev
               wechat-uos 
