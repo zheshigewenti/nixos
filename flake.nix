@@ -47,13 +47,27 @@
             packages = with pkgs; [
              (texlive.combine {
                inherit (texlive) 
-                scheme-small 
-                amsmath 
-                cleveref 
-                xecjk 
-                fontspec 
-                filehook
-                xetex;
+                scheme-small
+                ctex          # 中文核心支持
+                psnfss        # 核心字体 (解决 Charter 报错)
+                amsmath       # 数学公式
+                titlesec      # 标题样式
+                enumitem      # 列表样式
+                geometry      # 页面边距
+                xcolor        # 颜色处理
+                hyperref      # 链接与 PDF 书签
+                cleveref      # 智能交叉引用
+                natbib        # 参考文献管理
+                fontawesome5  # 修复图标缺失 
+                lastpage      # 修复页码计算 
+                changepage    # 修复边距调整
+                paracol       # 修复双栏/日期对齐
+                needspace     # 修复分页逻辑
+                bookmark      # 修复书签增强支持
+                environ       # 某些高级环境依赖
+                tools
+                trimspaces;   # 处理字符空格
+
               })
               google-chrome
               clash-verge-rev
