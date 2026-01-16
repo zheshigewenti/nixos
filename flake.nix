@@ -183,6 +183,7 @@
                 servers = {
                   pyright.enable = true;
                   nil_ls.enable = true;
+                  texlab.enable = true;
                 };
               };
               cmp = {
