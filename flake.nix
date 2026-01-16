@@ -165,6 +165,7 @@
               relativenumber = true;
               shiftwidth = 2;
               expandtab = true;
+              undofile = true;
               mouse = "a";
               ignorecase = true;
             };
@@ -192,6 +193,8 @@
                  settings = {
                    # 映射必须是属性集，每个映射后面跟分号
                    mapping = {
+                     "<C-n>" = "cmp.mapping(function(fallback) fallback() end, { 'i', 'c' })";
+                     "<C-p>" = "cmp.mapping(function(fallback) fallback() end, { 'i', 'c' })";
                      "<Tab>" = "cmp.mapping.select_next_item()";
                      "<S-Tab>" = "cmp.mapping.select_prev_item()";
                      "<CR>" = "cmp.mapping.confirm({ select = true })";
