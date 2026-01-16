@@ -186,14 +186,23 @@
                   texlab.enable = true;
                 };
               };
-              cmp = {
-                enable = true;
-                settings.sources = [
-                  { name = "nvim_lsp"; }
-                  { name = "path"; }
-                  { name = "buffer"; }
-                ];
-              };
+
+               cmp = {
+                 enable = true;
+                 settings = {
+                   # 映射必须是属性集，每个映射后面跟分号
+                   mapping = {
+                     "<Tab>" = "cmp.mapping.select_next_item()";
+                     "<S-Tab>" = "cmp.mapping.select_prev_item()";
+                     "<CR>" = "cmp.mapping.confirm({ select = true })";
+                   }; 
+                   sources = [
+                     { name = "nvim_lsp"; }
+                     { name = "buffer"; }
+                     { name = "path"; }
+                   ];
+                 }; # 这里结束 settings
+               }; # 这里结束 plugins.cmp
             };
           };
 
