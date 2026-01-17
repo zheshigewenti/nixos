@@ -49,7 +49,6 @@
                inherit (texlive) 
                 scheme-small
                 ctex          # 中文核心支持
-                psnfss        # 核心字体 (解决 Charter 报错)
                 amsmath       # 数学公式
                 titlesec      # 标题样式
                 enumitem      # 列表样式
@@ -64,9 +63,8 @@
                 paracol       # 修复双栏/日期对齐
                 needspace     # 修复分页逻辑
                 bookmark      # 修复书签增强支持
-                environ       # 某些高级环境依赖
-                tools
-                trimspaces;   # 处理字符空格
+                trimspaces    # 处理字符空格
+                tools;
 
               })
               google-chrome
