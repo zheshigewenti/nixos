@@ -84,6 +84,8 @@
               fd 
               neofetch
               steam
+              wireshark
+              nmap
             ];
           };
 
@@ -235,7 +237,8 @@
             options = "--delete-older-than 7d";
           };
           
-          networking.firewall.allowedTCPPorts = [ 22 7897 443 80 ];
+          services.openssh.enable = true;
+          networking.firewall.allowedTCPPorts = [22];
 
           system.stateVersion = "25.11"; 
         })
