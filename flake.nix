@@ -131,38 +131,36 @@
             enable = true;
             globals.mapleader = " ";
             extraConfigLua = ''
-         local fcitx_state = 1
-         local augroup = vim.api.nvim_create_augroup("FcitxMemoryAsync", { clear = true })
-         
-         local function fcitx_cmd(arg)
-             vim.fn.jobstart({"fcitx5-remote", arg})
-         end
-         
-         vim.api.nvim_create_autocmd("InsertLeave", {
-             group = augroup,
-             callback = function()
-                 vim.fn.jobstart({"fcitx5-remote"}, {
-                     on_stdout = function(_, data)
-                         local status = data and tonumber(data[1])
-                         if status == 2 then
-                             fcitx_state = 2
-                             fcitx_cmd("-c")
-                         else
-                             fcitx_state = 1
-                         end
-                     end
-                 })
-             end,
-         })
-         
-         vim.api.nvim_create_autocmd("InsertEnter", {
-             group = augroup,
-             callback = function()
-                 if fcitx_state == 2 then
-                     fcitx_cmd("-o")
-                 end
-             end,
-         })   
+            local fcitx_state = 1
+            local has_fcitx = vim.fn.executable("fcitx5-remote") == 1
+            
+            if has_fcitx then
+                local augroup = vim.api.nvim_create_augroup("FcitxUltimate", { clear = true })
+                
+                local function fcitx_cmd(arg)
+                    vim.fn.jobstart({"fcitx5-remote", arg})
+                end
+            
+                vim.api.nvim_create_autocmd({ "InsertLeave", "CmdlineLeave" }, {
+                    group = augroup,
+                    callback = function()
+                        local handle = io.popen("fcitx5-remote")
+                        if handle then
+                            local status = tonumber(handle:read("*all"))
+                            handle:close()
+                            fcitx_state = status or 1
+                            if fcitx_state == 2 then fcitx_cmd("-c") end
+                        end
+                    end,
+                })
+            
+                vim.api.nvim_create_autocmd("InsertEnter", {
+                    group = augroup,
+                    callback = function()
+                        if fcitx_state == 2 then fcitx_cmd("-o") end
+                    end,
+                })
+            end
             '';
             defaultEditor = true;
             opts = {
