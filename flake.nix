@@ -131,33 +131,38 @@
             enable = true;
             globals.mapleader = " ";
             extraConfigLua = ''
-              -- 存储输入法状态的变量
-              local fcitx_state = 1
-
-              -- 离开插入模式：记录当前状态并切回英文
-              vim.api.nvim_create_autocmd("InsertLeave", {
-                pattern = "*",
+            local fcitx_state = 1
+            local augroup = vim.api.nvim_create_augroup("FcitxAsync", { clear = true })
+            
+            local function fcitx_cmd(arg)
+                vim.fn.jobstart({"fcitx5-remote", arg})
+            end
+            
+            vim.api.nvim_create_autocmd("InsertLeave", {
+                group = augroup,
                 callback = function()
-                  -- 检查当前状态 (2 表示中文, 1 表示英文)
-                  local status = tonumber(io.popen("fcitx5-remote"):read("*all"))
-                  if status == 2 then
-                    fcitx_state = 2
-                    os.execute("fcitx5-remote -c") -- 切回英文
-                  else
-                    fcitx_state = 1
-                  end
+                    vim.fn.jobstart({"fcitx5-remote"}, {
+                        on_stdout = function(_, data)
+                            local status = data and tonumber(data[1])
+                            if status == 2 then
+                                fcitx_state = 2
+                                fcitx_cmd("-c")
+                            else
+                                fcitx_state = 1
+                            end
+                        end
+                    })
                 end,
-              })
-
-              -- 进入插入模式：如果上次是中文，则恢复中文
-              vim.api.nvim_create_autocmd("InsertEnter", {
-                pattern = "*",
+            })
+            
+            vim.api.nvim_create_autocmd("InsertEnter", {
+                group = augroup,
                 callback = function()
-                  if fcitx_state == 2 then
-                    os.execute("fcitx5-remote -o") -- 恢复中文
-                  end
+                    if fcitx_state == 2 then
+                        fcitx_cmd("-o")
+                    end
                 end,
-              })
+            })
             '';
             defaultEditor = true;
             opts = {
