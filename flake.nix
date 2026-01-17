@@ -77,7 +77,6 @@
               git
               lazygit 
               gh
-              htop 
               ripgrep
               fd 
               neofetch
@@ -94,7 +93,7 @@
             autosuggestions.enable = true;
             syntaxHighlighting.enable = true;
             shellAliases = {
-              n = "neofetch"; h = "htop"; vi = "nvim"; lg = "lazygit";
+              n = "neofetch"; t = "top"; vi = "nvim"; lg = "lazygit";
               ls = "ls --color=auto";
               update = "sudo nixos-rebuild switch --flake .#nixos";
             };
