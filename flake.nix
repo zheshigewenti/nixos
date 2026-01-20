@@ -122,6 +122,7 @@
               bind j select-pane -D
               bind k select-pane -U
               bind l select-pane -R
+              set -g status-right "#{=21:pane_title} %H:%M"
             '';
           };
 
