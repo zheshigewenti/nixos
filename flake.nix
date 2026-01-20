@@ -118,11 +118,15 @@
             extraConfig = ''
               set -g mouse on
               set -g status-style "bg=default"
+              unbind '"'
+              unbind %
               bind h select-pane -L
               bind j select-pane -D
               bind k select-pane -U
               bind l select-pane -R
-              set -g status-right "#{=21:pane_title} %H:%M"
+              bind | split-window -h -c "#{pane_current_path}"
+              bind - split-window -v -c "#{pane_current_path}"
+              set -g status-right "#(ps -t #{pane_tty} -o args= | grep 'ssh' | grep -v 'grep' | sed 's/.* //' | sed 's/.*@//' || hostname -s) %H:%M"
             '';
           };
 
