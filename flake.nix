@@ -81,8 +81,9 @@
               fd 
               neofetch
               steam
-              wireshark
+              tshark
               nmap
+              hugo
             ];
           };
 
