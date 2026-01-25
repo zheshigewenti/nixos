@@ -70,6 +70,7 @@
               google-chrome
               clash-verge-rev
               wechat-uos 
+              qq
               wpsoffice-cn
               ffmpeg-full 
               shotcut 
