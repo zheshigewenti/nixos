@@ -191,9 +191,12 @@
               lsp = {
                 enable = true;
                 servers = {
-                  pyright.enable = true;
+                  # pyright.enable = true;
                   nil_ls.enable = true;
                   texlab.enable = true;
+                  marksman.enable = true;
+                  html.enable = true;
+                  cssls.enable = true;
                 };
               };
 
