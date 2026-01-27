@@ -68,6 +68,7 @@
 
               })
               google-chrome
+              firefox
               clash-verge-rev
               wechat-uos 
               qq
