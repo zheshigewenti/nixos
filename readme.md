@@ -1,5 +1,5 @@
 ```shell
-sudo nixos-rebuild switch --flake github:zheshigewenti/nixos#nixos #云端部署
+sudo nixos-rebuild switch --flake github:zheshigewenti/nixos#hostname #云端部署
 nix flake update #更新lock文件
 sudo chown -R vincent nixos #将文件所有者递归改为vincent
 sudo nixos-rebuild switch --flake .#hostname
