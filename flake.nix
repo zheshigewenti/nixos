@@ -260,7 +260,6 @@
           { networking.hostName = "desktop"; }
         ];
       };
-
     };
   };
 }
