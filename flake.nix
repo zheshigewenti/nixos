@@ -61,7 +61,7 @@
           n = "neofetch"; t = "top"; vi = "nvim"; lg = "lazygit";
           grep = "grep --color=auto -n"; ls = "ls --color=auto";
           # 智能更新命令：自动检测当前目录下的 flake
-          update = "sudo nixos-rebuild switch --flake .";
+          update = "sudo nixos-rebuild switch --flake .#$(hostname)";
         };
         promptInit = ''
           export http_proxy=http://127.0.0.1:7897
