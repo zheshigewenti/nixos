@@ -1,8 +1,5 @@
 ```shell
-curl -L https://raw.githubusercontent.com/zheshigewenti/nixos/master/install.sh -o install.sh
-chmod +x install.sh
-./install.sh
-
+sudo nixos-rebuild switch --flake github:zheshigewenti/nixos#nixos #云端部署
 nix flake update #更新lock文件
 sudo chown -R vincent nixos #将文件所有者递归改为vincent
 sudo nixos-rebuild switch --flake .
