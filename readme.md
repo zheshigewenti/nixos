@@ -1,6 +1,6 @@
 ```shell
 sudo nixos-rebuild switch --flake github:zheshigewenti/nixos#hostname #云端部署
-nix-shell -p git
+nix run nixpkgs#git -- clone https://github.com/zheshigewenti/nixos.git
 sudo nixos-generate-config --show-hardware-config > hostname.nix #硬件配置覆盖
 sudo chown -R vincent nixos #将文件所有者递归改为vincent
 sudo nixos-rebuild switch --flake .#hostname
