@@ -56,7 +56,7 @@
 
         };
         promptInit = ''
-          # 代理设置
+              # 代理设置
               export http_proxy=http://127.0.0.1:7897
               export https_proxy=http://127.0.0.1:7897
               # 输入法设置
@@ -68,7 +68,7 @@
         '';
       };
 
-       # ---  Tmux 配置 ---
+       # Tmux 配置
           programs.tmux = {
             enable = true;
             shortcut = "a";
@@ -177,7 +177,7 @@
             };
           };
 
-	# ---  字体、中文支持与输入法 ---
+	# 字体、中文输入法
           i18n.inputMethod = {
             enable = true;
             type = "fcitx5";
