@@ -50,26 +50,155 @@
         autosuggestions.enable = true;
         syntaxHighlighting.enable = true;
         shellAliases = {
-          update = "sudo nixos-rebuild switch --flake .#$(hostname)";
-          n = "neofetch"; vi = "nvim"; lg = "lazygit";
+          n = "neofetch"; t = "top"; vi = "nvim"; lg = "lazygit"; grep = "grep --color=auto -n";
+          ls = "ls --color=auto";
+	  update = "sudo nixos-rebuild switch --flake .#nixos";
+
         };
         promptInit = ''
-          export http_proxy=http://127.0.0.1:7897
-          export https_proxy=http://127.0.0.1:7897
-          export PROMPT='%F{cyan}%n@%m%f:%F{blue}%~%f$ '
+          # 代理设置
+              export http_proxy=http://127.0.0.1:7897
+              export https_proxy=http://127.0.0.1:7897
+              # 输入法设置
+              export GTK_IM_MODULE="fcitx"
+              export QT_IM_MODULE="fcitx"
+              export XMODIFIERS="@im=fcitx"
+              # 提示符设置
+              export PROMPT='%F{cyan}%n@%m%f:%F{blue}%~%f$ '
         '';
       };
 
-      # Nixvim 配置
-      programs.nixvim = {
-        enable = true;
-        # ... (保留你原来的 Nixvim 配置)
-        plugins = { treesitter.enable = true; lsp.enable = true; cmp.enable = true; telescope.enable = true; };
-      };
+       # ---  Tmux 配置 ---
+          programs.tmux = {
+            enable = true;
+            shortcut = "a";
+            keyMode = "vi";
+            extraConfig = ''
+              set -g mouse on
+              set -g status-style "bg=default"
+              set -g status-right "#{=21:pane_title} %H:%M"
+              unbind '"'
+              unbind %
+              bind h select-pane -L
+              bind j select-pane -D
+              bind k select-pane -U
+              bind l select-pane -R
+              bind | split-window -h -c "#{pane_current_path}"
+              bind - split-window -v -c "#{pane_current_path}"
+            '';
+          };
 
-      i18n.inputMethod = { enable = true; type = "fcitx5"; fcitx5.waylandFrontend = true; fcitx5.addons = with pkgs; [ qt6Packages.fcitx5-chinese-addons fcitx5-gtk ]; };
-      fonts.packages = with pkgs; [ noto-fonts noto-fonts-cjk-sans noto-fonts-color-emoji ];
-      nix.gc = { automatic = true; dates = "daily"; options = "--delete-older-than 7d"; };
+      # Nixvim 配置
+       programs.nixvim = {
+            enable = true;
+            globals.mapleader = " ";
+            extraConfigLua = ''
+            local fcitx_state = 1
+            local has_fcitx = vim.fn.executable("fcitx5-remote") == 1
+            
+            if has_fcitx then
+                local augroup = vim.api.nvim_create_augroup("FcitxUltimate", { clear = true })
+                
+                local function fcitx_cmd(arg)
+                    vim.fn.jobstart({"fcitx5-remote", arg})
+                end
+            
+                vim.api.nvim_create_autocmd({ "InsertLeave", "CmdlineLeave" }, {
+                    group = augroup,
+                    callback = function()
+                        local handle = io.popen("fcitx5-remote")
+                        if handle then
+                            local status = tonumber(handle:read("*all"))
+                            handle:close()
+                            fcitx_state = status or 1
+                            if fcitx_state == 2 then fcitx_cmd("-c") end
+                        end
+                    end,
+                })
+            
+                vim.api.nvim_create_autocmd("InsertEnter", {
+                    group = augroup,
+                    callback = function()
+                        if fcitx_state == 2 then fcitx_cmd("-o") end
+                    end,
+                })
+            end
+            '';
+            defaultEditor = true;
+            opts = {
+              number = true;
+              relativenumber = true;
+              shiftwidth = 2;
+              expandtab = true;
+              undofile = true;
+              mouse = "a";
+              ignorecase = true;
+            };
+            plugins = {
+              web-devicons.enable = false;
+              treesitter.enable = true;
+              telescope = {
+                 enable = true;
+                  keymaps = {
+                  "<leader>ff" = "find_files";    # 查找文件
+                  "<leader>fg" = "live_grep";     # 全局搜索文本
+                };
+              };
+              lsp = {
+                enable = true;
+                servers = {
+                  # pyright.enable = true;
+                  nil_ls.enable = true;
+                  texlab.enable = true;
+                  marksman.enable = true;
+                  html.enable = true;
+                  cssls.enable = true;
+                };
+              };
+
+               cmp = {
+                 enable = true;
+                 settings = {
+                   # 映射必须是属性集，每个映射后面跟分号
+                   mapping = {
+                     "<C-n>" = "cmp.mapping(function(fallback) fallback() end, { 'i', 'c' })";
+                     "<C-p>" = "cmp.mapping(function(fallback) fallback() end, { 'i', 'c' })";
+                     "<Tab>" = "cmp.mapping.select_next_item()";
+                     "<S-Tab>" = "cmp.mapping.select_prev_item()";
+                     "<CR>" = "cmp.mapping.confirm({ select = true })";
+                   }; 
+                   sources = [
+                     { name = "nvim_lsp"; }
+                     { name = "buffer"; }
+                     { name = "path"; }
+                   ];
+                 }; # 这里结束 settings
+               }; # 这里结束 plugins.cmp
+            };
+          };
+
+	# ---  字体、中文支持与输入法 ---
+          i18n.inputMethod = {
+            enable = true;
+            type = "fcitx5";
+            fcitx5.waylandFrontend = true;
+            fcitx5.addons = with pkgs; [ qt6Packages.fcitx5-chinese-addons fcitx5-gtk ];
+          };
+
+          fonts = {
+            packages = with pkgs; [ 
+              noto-fonts noto-fonts-cjk-sans noto-fonts-cjk-serif noto-fonts-color-emoji 
+            ];
+            fontconfig.defaultFonts = {
+              serif = [ "Noto Serif CJK SC" ];
+              sansSerif = [ "Noto Sans CJK SC" ];
+              monospace = [ "Noto Sans Mono CJK SC" ];
+            };
+          };
+
+
+
+        nix.gc = { automatic = true; dates = "daily"; options = "--delete-older-than 7d"; };
       system.stateVersion = "25.11"; 
     };
 
