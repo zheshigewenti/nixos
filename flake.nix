@@ -31,6 +31,15 @@
       # 基础图形支持 
       hardware.graphics = { enable = true; enable32Bit = true; };
 
+      # 环境变量
+      environment.variables = {
+      GTK_IM_MODULE = "fcitx";
+      QT_IM_MODULE = "fcitx";
+      XMODIFIERS = "@im=fcitx";
+      SDL_IM_MODULE = "fcitx";
+      NIXOS_OZONE_WL = "1";
+  };
+
       # 用户与软件
       users.users.vincent = {
         isNormalUser = true;
@@ -59,10 +68,6 @@
               # 代理设置
               export http_proxy=http://127.0.0.1:7897
               export https_proxy=http://127.0.0.1:7897
-              # 输入法设置
-              export GTK_IM_MODULE="fcitx"
-              export QT_IM_MODULE="fcitx"
-              export XMODIFIERS="@im=fcitx"
               # 提示符设置
               export PROMPT='%F{cyan}%n@%m%f:%F{blue}%~%f$ '
         '';
@@ -182,7 +187,7 @@
             enable = true;
             type = "fcitx5";
             fcitx5.waylandFrontend = true;
-            fcitx5.addons = with pkgs; [ qt6Packages.fcitx5-chinese-addons fcitx5-gtk ];
+            fcitx5.addons = with pkgs; [ qt6Packages.fcitx5-chinese-addons fcitx5-gtk];
           };
 
           fonts = {
