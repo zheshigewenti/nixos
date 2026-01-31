@@ -72,7 +72,7 @@
               export PROMPT='%F{cyan}%n@%m%f:%F{blue}%~%f$ '
         '';
       };
-
+     
        # Tmux 配置
           programs.tmux = {
             enable = true;
