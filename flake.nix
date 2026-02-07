@@ -23,6 +23,10 @@
       nix.settings.experimental-features = ["nix-command" "flakes"];
       nixpkgs.config.allowUnfree = true;
 
+      # 远程登陆
+      services.openssh.enable = true;
+      networking.firewall.allowedTCPPorts = [ 22 ];
+
       # 桌面环境
       services.xserver.enable = true;
       services.displayManager.gdm.enable = true;
