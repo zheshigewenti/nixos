@@ -63,7 +63,7 @@
         autosuggestions.enable = true;
         syntaxHighlighting.enable = true;
         shellAliases = {
-          n = "neofetch"; t = "top"; vi = "nvim"; lg = "lazygit"; grep = "grep --color=auto -n";
+          f = "fastfetch"; t = "top"; vi = "nvim"; lg = "lazygit"; grep = "grep --color=auto -n";
           ls = "ls --color=auto"; update = "sudo nixos-rebuild switch --flake .#$(hostname)";
 
         };
