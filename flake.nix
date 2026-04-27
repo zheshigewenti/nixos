@@ -52,7 +52,7 @@
         shell = pkgs.zsh;
         packages = with pkgs; [
           (texlive.combine { inherit (texlive) scheme-small ctex amsmath titlesec enumitem geometry xcolor hyperref cleveref natbib fontawesome5 lastpage changepage paracol needspace bookmark trimspaces tools; })
-          google-chrome firefox clash-verge-rev wechat-uos qq wpsoffice-cn ffmpeg-full shotcut zotero git lazygit gh ripgrep fd fastfetch steam tshark nmap hugo quickemu quickgui
+          google-chrome firefox clash-verge-rev qq wpsoffice-cn ffmpeg-full shotcut zotero git lazygit gh ripgrep fd fastfetch steam tshark nmap hugo quickemu quickgui
         ];
       };
 
