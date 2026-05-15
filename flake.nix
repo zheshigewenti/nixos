@@ -17,6 +17,9 @@
     commonModule = { pkgs, config, ... }: {
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
+      boot.extraModprobeConfig = ''
+  options dell_smm_hwmon restricted=1 ignore_dmi=1
+'';
       networking.networkmanager.enable = true;
       time.timeZone = "Asia/Shanghai";
       i18n.defaultLocale = "zh_CN.UTF-8";
@@ -37,21 +40,19 @@
       services.displayManager.gdm.enable = true;
       services.desktopManager.gnome.enable = true;
 
-      # 风扇 
-      services.thermald.enable = true; 
-      environment.sessionVariables = {
-      NIXOS_OZONE_WL = "1";
-}; 
-      # 基础图形支持 
       hardware.graphics = {
-      enable = true;
-      enable32Bit = true;
-      extraPackages = with pkgs; [
-       intel-media-driver 
-       intel-vaapi-driver
-       libvdpau-va-gl
-  ];
-};
+        enable = true;
+        enable32Bit = true; # 绝对不能删
+        extraPackages = with pkgs; [
+          intel-media-driver 
+          intel-vaapi-driver # 保留这个增强兼容性
+          libvdpau-va-gl     # 某些老渲染器需要这个翻译层
+        ];
+        extraPackages32 = with pkgs.pkgsi686Linux; [
+          intel-vaapi-driver # 32位游戏必须有它
+          libvdpau-va-gl
+        ];
+      };
 
 # 环境变量
       environment.variables = {
@@ -59,7 +60,6 @@
         QT_IM_MODULE = "fcitx";
         XMODIFIERS = "@im=fcitx";
         SDL_IM_MODULE = "fcitx";
-        NIXOS_OZONE_WL = "1";
       };
 
       # 用户与软件
