@@ -36,11 +36,24 @@
       services.xserver.enable = true;
       services.displayManager.gdm.enable = true;
       services.desktopManager.gnome.enable = true;
-      
-      # 基础图形支持 
-      hardware.graphics = { enable = true; enable32Bit = true; };
 
-      # 环境变量
+      # 风扇 
+      services.thermald.enable = true; 
+      environment.sessionVariables = {
+      NIXOS_OZONE_WL = "1";
+}; 
+      # 基础图形支持 
+      hardware.graphics = {
+      enable = true;
+      enable32Bit = true;
+      extraPackages = with pkgs; [
+       intel-media-driver 
+       intel-vaapi-driver
+       libvdpau-va-gl
+  ];
+};
+
+# 环境变量
       environment.variables = {
         GTK_IM_MODULE = "fcitx";
         QT_IM_MODULE = "fcitx";
