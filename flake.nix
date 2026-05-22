@@ -54,7 +54,7 @@
         ];
       };
 
-# 环境变量
+      # 环境变量
       environment.variables = {
         GTK_IM_MODULE = "fcitx";
         QT_IM_MODULE = "fcitx";
