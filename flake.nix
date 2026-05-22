@@ -45,14 +45,8 @@
         enable32Bit = true; # 绝对不能删
         extraPackages = with pkgs; [
           intel-media-driver 
-          intel-vaapi-driver # 保留这个增强兼容性
-          libvdpau-va-gl     # 某些老渲染器需要这个翻译层
         ];
-        extraPackages32 = with pkgs.pkgsi686Linux; [
-          intel-vaapi-driver # 32位游戏必须有它
-          libvdpau-va-gl
-        ];
-      };
+            };
 
       # 环境变量
       environment.variables = {
