@@ -44,6 +44,7 @@
         enable = true;
         enable32Bit = true; # 绝对不能删
         extraPackages = with pkgs; [
+        intel-media-driver
         ];
             };
 
