@@ -235,7 +235,7 @@
   in {
     nixosConfigurations = {
       
-      # --- 主机 1: XPS ---
+# --- 主机 1: XPS ---
       xps = inputs.nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         # 优化点 2: 统一使用 inputs. 前缀调用
@@ -243,10 +243,24 @@
           ./xps.nix
           inputs.nixvim.nixosModules.nixvim
           commonModule
-          { networking.hostName = "xps"; 
+          {
+            networking.hostName = "xps"; 
+
+            # 🛠️ 终极物理超度：把所有可能犯贱的戴尔风扇/温控模块全部丢进黑名单
             boot.extraModprobeConfig = ''
-              options dell_smm_hwmon restricted=1 ignore_dmi=1
+              blacklist i8k
+              blacklist dell_wmi_ddv
+              blacklist dell_smm_hwmon
+              blacklist dell_smm
             '';
+
+            # 🔒 强制内核在引导阶段就绝对不加载它们
+            boot.blacklistedKernelModules = [ 
+              "dell_wmi_ddv" 
+              "i8k" 
+              "dell_smm_hwmon" 
+              "dell_smm" 
+            ];
           }
         ];
       };
