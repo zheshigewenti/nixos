@@ -17,9 +17,7 @@
     commonModule = { pkgs, config, ... }: {
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
-      boot.extraModprobeConfig = ''
-  options dell_smm_hwmon restricted=1 ignore_dmi=1
-'';
+
       networking.networkmanager.enable = true;
       time.timeZone = "Asia/Shanghai";
       i18n.defaultLocale = "zh_CN.UTF-8";
@@ -245,7 +243,11 @@
           ./xps.nix
           inputs.nixvim.nixosModules.nixvim
           commonModule
-          { networking.hostName = "xps"; }
+          { networking.hostName = "xps"; 
+            boot.extraModprobeConfig = ''
+              options dell_smm_hwmon restricted=1 ignore_dmi=1
+            '';
+          }
         ];
       };
 
