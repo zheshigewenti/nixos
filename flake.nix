@@ -108,6 +108,7 @@
       # Nixvim 配置
       programs.nixvim = {
         enable = true;
+        nixpkgs.source = pkgs;
         globals.mapleader = " ";
         extraConfigLua = ''
           local fcitx_state = 1
