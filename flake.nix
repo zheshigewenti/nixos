@@ -245,16 +245,12 @@
           commonModule
           {
             networking.hostName = "xps"; 
-
-            # 🛠️ 终极物理超度：把所有可能犯贱的戴尔风扇/温控模块全部丢进黑名单
             boot.extraModprobeConfig = ''
               blacklist i8k
               blacklist dell_wmi_ddv
               blacklist dell_smm_hwmon
               blacklist dell_smm
             '';
-
-            # 🔒 强制内核在引导阶段就绝对不加载它们
             boot.blacklistedKernelModules = [ 
               "dell_wmi_ddv" 
               "i8k" 
