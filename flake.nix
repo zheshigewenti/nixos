@@ -42,9 +42,9 @@
         enable = true;
         enable32Bit = true; # 绝对不能删
         extraPackages = with pkgs; [
-        intel-media-driver
+          intel-media-driver
         ];
-            };
+      };
 
       # 环境变量
       environment.variables = {
@@ -108,7 +108,10 @@
       # Nixvim 配置
       programs.nixvim = {
         enable = true;
-        nixpkgs.source = pkgs;
+        
+        # 🛠️ 终极降维打击：从顶层作用域抓取绝对路径对象，完美封住警告
+        nixpkgs.source = inputs.nixpkgs;
+        
         globals.mapleader = " ";
         extraConfigLua = ''
           local fcitx_state = 1
@@ -236,10 +239,9 @@
   in {
     nixosConfigurations = {
       
-# --- 主机 1: XPS ---
+      # --- 主机 1: XPS ---
       xps = inputs.nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        # 优化点 2: 统一使用 inputs. 前缀调用
         modules = [
           ./xps.nix
           inputs.nixvim.nixosModules.nixvim
