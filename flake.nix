@@ -53,6 +53,7 @@
         QT_IM_MODULE = "fcitx";
         XMODIFIERS = "@im=fcitx";
         SDL_IM_MODULE = "fcitx";
+        SSL_CERT_FILE = "/etc/ssl/certs/ca-bundle.crt";
       };
 
       # 用户与软件
