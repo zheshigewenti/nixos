@@ -64,9 +64,13 @@
         shell = pkgs.zsh;
         packages = with pkgs; [
           (texlive.combine { inherit (texlive) scheme-small ctex amsmath titlesec enumitem geometry xcolor hyperref cleveref natbib fontawesome5 lastpage changepage paracol needspace bookmark trimspaces tools; })
-          google-chrome clash-verge-rev qq wechat wpsoffice-cn ffmpeg-full zotero git lazygit gh ripgrep fd fastfetch steam steam-run tshark nmap hugo quickemu quickgui wget  #重装系统请删掉本地源的wechat,不然会报错
+          google-chrome clash-verge-rev qq  wpsoffice-cn ffmpeg-full zotero git lazygit gh ripgrep fd fastfetch steam steam-run tshark nmap hugo quickemu quickgui wget 
         ];
       };
+
+      nixpkgs.config.permittedInsecurePackages = [
+    "pnpm-9.15.9"
+  ];
 
       # Zsh 配置
       programs.zsh = {
