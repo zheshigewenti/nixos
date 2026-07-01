@@ -16,7 +16,11 @@
 
   outputs = inputs: 
   let
- # 【关键修改】直接使用 inputs.nixpkgs-clash，不再引用绝对路径
+    # 定义基础平台配置模块以消除警告
+    baseConfig = {
+      nixpkgs.hostPlatform = "x86_64-linux";
+    };
+
     clashOverlay = final: prev: {
       clash-verge-rev = inputs.nixpkgs-clash.legacyPackages.${prev.system}.clash-verge-rev;
     };
@@ -127,7 +131,6 @@
       programs.nixvim = {
         enable = true;
         
-        # 🛠️ 终极降维打击：从顶层作用域抓取绝对路径对象，完美封住警告
         nixpkgs.source = inputs.nixpkgs;
         
         globals.mapleader = " ";
@@ -259,8 +262,8 @@
       
       # --- 主机 1: XPS ---
       xps = inputs.nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
         modules = [
+          baseConfig
           ./xps.nix
           inputs.nixvim.nixosModules.nixvim
           commonModule
@@ -284,8 +287,8 @@
 
       # --- 主机 2: Surface ---
       surface = inputs.nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
         modules = [
+          baseConfig
           ./surface.nix
           inputs.nixvim.nixosModules.nixvim
           commonModule
@@ -298,8 +301,8 @@
 
       # --- 主机 3: Desktop ---
       desktop = inputs.nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
         modules = [
+          baseConfig
           ./desktop.nix
           inputs.nixvim.nixosModules.nixvim
           commonModule
