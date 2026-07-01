@@ -7,15 +7,26 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixpkgs-clash = {
+      url = "github:nixos/nixpkgs/331800de5053fcebacf6813adb5db9c9dca22a0c";
+      flake = true; 
+    };
     
   };
 
   outputs = inputs: 
   let
+ # 【关键修改】直接使用 inputs.nixpkgs-clash，不再引用绝对路径
+    clashOverlay = final: prev: {
+      clash-verge-rev = inputs.nixpkgs-clash.legacyPackages.${prev.system}.clash-verge-rev;
+    };
+
     # ---------------------------------------------------------
     # 1. 公用模块 (所有主机共享的软件、Zsh、Nixvim 等)
     # ---------------------------------------------------------
     commonModule = { pkgs, config, ... }: {
+      nixpkgs.overlays = [ clashOverlay ];
+
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
 
@@ -56,6 +67,7 @@
         SSL_CERT_FILE = "/etc/ssl/certs/ca-bundle.crt";
       };
 
+
       # 用户与软件
       users.users.vincent = {
         isNormalUser = true;
@@ -80,7 +92,7 @@
         syntaxHighlighting.enable = true;
         shellAliases = {
           f = "fastfetch"; t = "top"; vi = "nvim"; lg = "lazygit"; grep = "grep --color=auto -n";
-          ls = "ls --color=auto"; update = "sudo nixos-rebuild switch --flake .#$(hostname)";
+          ls = "ls --color=auto"; update = "sudo http_proxy=http://127.0.0.1:7897 https_proxy=http://127.0.0.1:7897 nixos-rebuild switch --flake .#$(hostname)";
         };
         promptInit = ''
           # 代理设置
