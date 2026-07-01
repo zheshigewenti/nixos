@@ -12,4 +12,5 @@ sudo nix-collect-garbage #删除无用的版本
 sudo nix-store --gc #清理所有不再被任何版本引用的包
 sudo journalctl --rotate #将当前日志封存归档
 sudo journalctl --vacuum-time=1s #清理1秒前的日志
+nix store prefetch-file https://github.com/nixos/nixpkgs/archive/331800de5053fcebacf6813adb5db9c9dca22a0c.tar.gz   #手动下载clash旧版本的包
 ```
