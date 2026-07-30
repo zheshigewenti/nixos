@@ -7,10 +7,10 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixpkgs-clash = {
-      url = "github:nixos/nixpkgs/331800de5053fcebacf6813adb5db9c9dca22a0c";
-      flake = true; 
-    };
+    # nixpkgs-clash = {
+    #   url = "github:nixos/nixpkgs/331800de5053fcebacf6813adb5db9c9dca22a0c";
+    #   flake = true; 
+    # };
     
   };
 
@@ -21,15 +21,15 @@
       nixpkgs.hostPlatform = "x86_64-linux";
     };
 
-    clashOverlay = final: prev: {
-      clash-verge-rev = inputs.nixpkgs-clash.legacyPackages.${prev.system}.clash-verge-rev;
-    };
+    # clashOverlay = final: prev: {
+    #   clash-verge-rev = inputs.nixpkgs-clash.legacyPackages.${prev.system}.clash-verge-rev;
+    # };
 
     # ---------------------------------------------------------
     # 1. 公用模块 (所有主机共享的软件、Zsh、Nixvim 等)
     # ---------------------------------------------------------
     commonModule = { pkgs, config, ... }: {
-      nixpkgs.overlays = [ clashOverlay ];
+      # nixpkgs.overlays = [ clashOverlay ];
 
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
@@ -78,9 +78,46 @@
         description = "vincent";
         extraGroups = [ "networkmanager" "wheel" ];
         shell = pkgs.zsh;
-        packages = with pkgs; [
-          (texlive.combine { inherit (texlive) scheme-small ctex amsmath titlesec enumitem geometry xcolor hyperref cleveref natbib fontawesome5 lastpage changepage paracol needspace bookmark trimspaces tools; })
-          google-chrome clash-verge-rev qq  wpsoffice-cn ffmpeg-full zotero git lazygit gh ripgrep fd fastfetch steam steam-run tshark nmap hugo quickemu quickgui wget 
+packages = with pkgs; [
+          (texliveSmall.withPackages (ps: with ps; [
+            scheme-small
+            ctex
+            amsmath
+            titlesec
+            enumitem
+            geometry
+            xcolor
+            hyperref
+            cleveref
+            natbib
+            fontawesome5
+            lastpage
+            changepage
+            paracol
+            needspace
+            bookmark
+            trimspaces
+            tools
+          ]))
+          google-chrome
+          clash-verge-rev
+          wpsoffice-cn
+          ffmpeg-full
+          zotero
+          git
+          lazygit
+          gh
+          ripgrep
+          fd
+          fastfetch
+          steam
+          steam-run
+          tshark
+          nmap
+          hugo
+          quickemu
+          quickgui
+          wget
         ];
       };
 
