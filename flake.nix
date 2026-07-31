@@ -7,11 +7,6 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # nixpkgs-clash = {
-    #   url = "github:nixos/nixpkgs/331800de5053fcebacf6813adb5db9c9dca22a0c";
-    #   flake = true; 
-    # };
-    
   };
 
   outputs = inputs: 
@@ -21,16 +16,10 @@
       nixpkgs.hostPlatform = "x86_64-linux";
     };
 
-    # clashOverlay = final: prev: {
-    #   clash-verge-rev = inputs.nixpkgs-clash.legacyPackages.${prev.system}.clash-verge-rev;
-    # };
-
     # ---------------------------------------------------------
     # 1. 公用模块 (所有主机共享的软件、Zsh、Nixvim 等)
     # ---------------------------------------------------------
     commonModule = { pkgs, config, ... }: {
-      # nixpkgs.overlays = [ clashOverlay ];
-
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
 
@@ -121,10 +110,6 @@ packages = with pkgs; [
         ];
       };
 
-      nixpkgs.config.permittedInsecurePackages = [
-    "pnpm-9.15.9"
-  ];
-
       # Zsh 配置
       programs.zsh = {
         enable = true;
@@ -211,6 +196,7 @@ packages = with pkgs; [
           expandtab = true;
           undofile = true;
           mouse = "a";
+          clipboard = "unnamedplus";
           ignorecase = true;
         };
         plugins = {
