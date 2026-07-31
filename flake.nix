@@ -43,6 +43,8 @@
       services.displayManager.gdm.enable = true;
       services.desktopManager.gnome.enable = true;
 
+      services.flatpak.enable = true;
+
       hardware.graphics = {
         enable = true;
         enable32Bit = true; # 绝对不能删
@@ -89,6 +91,7 @@ packages = with pkgs; [
             tools
           ]))
           google-chrome
+          flatpak
           clash-verge-rev
           wpsoffice-cn
           ffmpeg-full
