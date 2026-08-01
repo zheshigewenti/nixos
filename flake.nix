@@ -1,4 +1,5 @@
-{ description = "NixOS Config";
+{
+  description = "NixOS Config";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -10,14 +11,31 @@
 
   outputs = inputs: 
   let
-    # 定义基础平台配置模块以消除警告
+    # =========================================================
+    # 1. 核心底层：最基础的平台属性（所有配置的基石）
+    # =========================================================
     baseConfig = {
       nixpkgs.hostPlatform = "x86_64-linux";
     };
 
-    # ---------------------------------------------------------
-    # 1. 公用模块 (所有主机共享的软件、Zsh、Nixvim 等)
-    # ---------------------------------------------------------
+    # =========================================================
+    # 2. 硬件特异性模块：独立扩展层
+    # =========================================================
+    # NVIDIA 专属模块（仅 Desktop 需要）
+    nvidiaModule = { config, ... }: {
+      services.xserver.videoDrivers = [ "nvidia" ];
+      hardware.nvidia = {
+        modesetting.enable = true;
+        powerManagement.enable = false;
+        open = true;
+        nvidiaSettings = true;
+        package = config.boot.kernelPackages.nvidiaPackages.stable;
+      };
+    };
+
+    # =========================================================
+    # 3. 公共共享模块：核心业务层（所有主机共享）
+    # =========================================================
     commonModule = { pkgs, config, ... }: {
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
@@ -46,7 +64,7 @@
 
       hardware.graphics = {
         enable = true;
-        enable32Bit = true; # 绝对不能删
+        enable32Bit = true;
         extraPackages = with pkgs; [
           intel-media-driver
         ];
@@ -61,14 +79,13 @@
         SSL_CERT_FILE = "/etc/ssl/certs/ca-bundle.crt";
       };
 
-
       # 用户与软件
       users.users.vincent = {
         isNormalUser = true;
         description = "vincent";
         extraGroups = [ "networkmanager" "wheel" ];
         shell = pkgs.zsh;
-packages = with pkgs; [
+        packages = with pkgs; [
           (texliveSmall.withPackages (ps: with ps; [
             scheme-small
             ctex
@@ -119,14 +136,17 @@ packages = with pkgs; [
         autosuggestions.enable = true;
         syntaxHighlighting.enable = true;
         shellAliases = {
-          f = "fastfetch"; t = "top"; vi = "nvim"; lg = "lazygit"; grep = "grep --color=auto -n";
-          ls = "ls --color=auto"; update = "sudo http_proxy=http://127.0.0.1:7897 https_proxy=http://127.0.0.1:7897 nixos-rebuild switch --flake .#$(hostname)";
+          f = "fastfetch"; 
+          t = "top"; 
+          vi = "nvim"; 
+          lg = "lazygit"; 
+          grep = "grep --color=auto -n";
+          ls = "ls --color=auto"; 
+          update = "sudo http_proxy=http://127.0.0.1:7897 https_proxy=http://127.0.0.1:7897 nixos-rebuild switch --flake .#$(hostname)";
         };
         promptInit = ''
-          # 代理设置
           export http_proxy=http://127.0.0.1:7897
           export https_proxy=http://127.0.0.1:7897
-          # 提示符设置
           export PROMPT='%F{cyan}%n@%m%f:%F{blue}%~%f$ '
         '';
       };
@@ -154,21 +174,14 @@ packages = with pkgs; [
       # Nixvim 配置
       programs.nixvim = {
         enable = true;
-        
         nixpkgs.source = inputs.nixpkgs;
-        
         globals.mapleader = " ";
         extraConfigLua = ''
           local fcitx_state = 1
           local has_fcitx = vim.fn.executable("fcitx5-remote") == 1
-          
           if has_fcitx then
             local augroup = vim.api.nvim_create_augroup("FcitxUltimate", { clear = true })
-            
-            local function fcitx_cmd(arg)
-              vim.fn.jobstart({"fcitx5-remote", arg})
-            end
-          
+            local function fcitx_cmd(arg) vim.fn.jobstart({"fcitx5-remote", arg}) end
             vim.api.nvim_create_autocmd({ "InsertLeave", "CmdlineLeave" }, {
               group = augroup,
               callback = function()
@@ -181,12 +194,9 @@ packages = with pkgs; [
                 end
               end,
             })
-          
             vim.api.nvim_create_autocmd("InsertEnter", {
               group = augroup,
-              callback = function()
-                if fcitx_state == 2 then fcitx_cmd("-o") end
-              end,
+              callback = function() if fcitx_state == 2 then fcitx_cmd("-o") end end,
             })
           end
         '';
@@ -251,7 +261,10 @@ packages = with pkgs; [
 
       fonts = {
         packages = with pkgs; [ 
-          noto-fonts noto-fonts-cjk-sans noto-fonts-cjk-serif noto-fonts-color-emoji 
+          noto-fonts 
+          noto-fonts-cjk-sans 
+          noto-fonts-cjk-serif 
+          noto-fonts-color-emoji 
         ];
         fontconfig.defaultFonts = {
           serif = [ "Noto Serif CJK SC" ];
@@ -268,21 +281,10 @@ packages = with pkgs; [
       system.stateVersion = "25.11"; 
     };
 
-    # ---------------------------------------------------------
-    # 2. NVIDIA 专属模块
-    # ---------------------------------------------------------
-    nvidiaModule = { config, ... }: {
-      services.xserver.videoDrivers = [ "nvidia" ];
-      hardware.nvidia = {
-        modesetting.enable = true;
-        powerManagement.enable = false;
-        open = true;
-        nvidiaSettings = true;
-        package = config.boot.kernelPackages.nvidiaPackages.stable;
-      };
-    };
-
   in {
+    # =========================================================
+    # 4. 最终总装层：将模块按主机各自组合
+    # =========================================================
     nixosConfigurations = {
       
       # --- 主机 1: XPS ---
@@ -338,4 +340,3 @@ packages = with pkgs; [
     };
   };
 }
-
