@@ -1,5 +1,4 @@
-{
-  description = "NixOS Config";
+{ description = "NixOS Config";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -339,3 +338,4 @@ packages = with pkgs; [
     };
   };
 }
+
