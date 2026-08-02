@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # daeuniverse.url = "github:daeuniverse/flake.nix";
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -54,6 +55,15 @@
       # 远程登陆
       services.openssh.enable = true;
       networking.firewall.allowedTCPPorts = [ 22 ];
+
+      # 开启 daed 服务与网页面板防火墙端口
+      # services.daed = {
+      #   enable = true;
+      #   openFirewall = {
+      #     enable = true;
+      #     port = 2023;
+      #   };
+      # };
 
       # 桌面环境
       services.xserver.enable = true;
@@ -142,7 +152,7 @@
           lg = "lazygit"; 
           grep = "grep --color=auto -n";
           ls = "ls --color=auto"; 
-          update = "sudo http_proxy=http://127.0.0.1:7897 https_proxy=http://127.0.0.1:7897 nixos-rebuild switch --flake .#$(hostname)";
+          update = "sudo nixos-rebuild switch --flake .#$(hostname)";
         };
         promptInit = ''
           export http_proxy=http://127.0.0.1:7897
@@ -293,6 +303,7 @@
           baseConfig
           ./xps.nix
           inputs.nixvim.nixosModules.nixvim
+          # inputs.daeuniverse.nixosModules.daed
           commonModule
           {
             networking.hostName = "xps"; 
@@ -318,6 +329,7 @@
           baseConfig
           ./surface.nix
           inputs.nixvim.nixosModules.nixvim
+          # inputs.daeuniverse.nixosModules.daed
           commonModule
           { 
             networking.hostName = "surface";
@@ -332,6 +344,7 @@
           baseConfig
           ./desktop.nix
           inputs.nixvim.nixosModules.nixvim
+          # inputs.daeuniverse.nixosModules.daed
           commonModule
           nvidiaModule
           { networking.hostName = "desktop"; }
