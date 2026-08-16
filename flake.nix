@@ -136,8 +136,8 @@
           quickemu
           quickgui
           wget
-          # pvz-portable
           vcmi
+          # pvz-portable
         ];
       };
 
