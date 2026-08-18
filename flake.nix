@@ -263,6 +263,13 @@
         };
       };
 
+      programs.winbox = {
+  enable = true;
+  package = pkgs.winbox4; # 明确指定使用官方原生的 WinBox 4 
+  openFirewall = true;     # 开启邻居发现防火墙端口
+};
+
+
       # 字体、中文输入法
       i18n.inputMethod = {
         enable = true;
