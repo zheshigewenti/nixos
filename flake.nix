@@ -241,6 +241,7 @@
               marksman.enable = true;
               html.enable = true;
               cssls.enable = true;
+              clangd.enable = true;
             };
           };
           cmp = {
