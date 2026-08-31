@@ -38,6 +38,7 @@
     # 3. 公共共享模块：核心业务层（所有主机共享）
     # =========================================================
     commonModule = { pkgs, config, ... }: {
+      boot.kernelPackages = pkgs.linuxPackages_latest;
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
 
