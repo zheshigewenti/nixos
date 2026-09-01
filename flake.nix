@@ -165,20 +165,17 @@ interactiveShellInit = ''
   unsetopt BEEP LIST_BEEP HIST_BEEP
 
   ff() {
-    local target=""
-    if [ -z "$1" ]; then
-      target=$(fd -t f . ~ | head -n 1)
+    local target="$1"
+    if [ -z "$target" ]; then
+      target=$(fd -t f . "$HOME" | head -n 1)
     else
-      target="$1"
+      target="''${target/#\~/$HOME}"
     fi
     
-    if [ -n "$target" ]; then
-      target="''${target/#\~/$HOME}"
-      if [ -f "$target" ]; then
-        cd "$(dirname "$target")" && nvim "$(basename "$target")"
-      else
-        echo "ff: 文件不存在: $target"
-      fi
+    if [ -n "$target" ] && [ -f "$target" ]; then
+      cd "$(dirname "$target")" && nvim "$(basename "$target")"
+    else
+      echo "ff: 文件不存在: $target"
     fi
   }
 
@@ -193,7 +190,7 @@ interactiveShellInit = ''
 
       local target
       if [ -n "$query" ]; then
-        target=$(cd ~ && fd -t f -E .cache -E .git -E .cargo -E .rustup "$query" 2>/dev/null \
+        target=$(cd "$HOME" && fd -t f -E .cache -E .git -E .cargo -E .rustup "$query" 2>/dev/null \
                  | awk -v q="$query" '
                  {
                    path = $0;
@@ -212,20 +209,18 @@ interactiveShellInit = ''
       fi
 
       if [ -n "$target" ]; then
-        BUFFER="ff ~/$target"
+        BUFFER="ff $HOME/$target"
         CURSOR=$#BUFFER
-        zle autosuggest-clear 2>/dev/null
-        zle redisplay
-        return 0
-      else
-        zle autosuggest-clear 2>/dev/null
-        zle redisplay
-        return 0
       fi
+      
+      zle autosuggest-clear 2>/dev/null
+      zle redisplay
+      return 0
     fi
     
     zle expand-or-complete
   }
+  
   zle -N _ff_tab_complete
   bindkey '^I' _ff_tab_complete
 '';
