@@ -51,6 +51,9 @@
       };
       
       nixpkgs.config.allowUnfree = true;
+      services.udev.extraRules = ''
+  ACTION=="add", SUBSYSTEM=="module", KERNEL=="intel_pstate", ATTR{parameters/max_perf_pct}="80"
+'';
 
       # 远程登陆
       services.openssh.enable = true;
