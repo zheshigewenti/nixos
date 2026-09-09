@@ -249,7 +249,7 @@ interactiveShellInit = ''
         '';
       };
 
-    # Nixvim 配置
+# Nixvim 配置
   programs.nixvim = {
     enable = true;
     nixpkgs.source = inputs.nixpkgs;
@@ -266,7 +266,6 @@ interactiveShellInit = ''
         vim.api.nvim_create_autocmd({ "InsertLeave", "CmdlineLeave" }, {
           group = augroup,
           callback = function()
-            -- 使用异步 jobstart 代替阻塞式的 io.popen
             vim.fn.jobstart({"fcitx5-remote"}, {
               stdout_buffered = true,
               on_stdout = function(_, data)
@@ -302,14 +301,14 @@ interactiveShellInit = ''
     plugins = {
       web-devicons.enable = false;
 
-      # 1. Treesitter: 延迟到 BufReadPost 或 BufNewFile 事件触发
+      # 1. Treesitter: 延迟到读取文件时加载
       treesitter = {
         enable = true;
         lazyLoad.settings.event = [ "BufReadPost" "BufNewFile" ];
       };
 
-      # 2. Telescope: 绑定快捷键与指令触发，按需加载
-       telescope = {
+      # 2. Telescope: 按需加载
+      telescope = {
         enable = true;
         lazyLoad.settings = {
           cmd = [ "Telescope" ];
@@ -320,10 +319,10 @@ interactiveShellInit = ''
         };
       };
 
-      # 3. LSP: 延后至进入缓冲区/新建文件时挂载
+      # 3. LSP: 仅对真正有代码语言的文件类型响应（更精准）
       lsp = {
         enable = true;
-        lazyLoad.settings.event = [ "BufReadPost" "BufNewFile" ];
+        lazyLoad.settings.event = [ "FileType" ];
         servers = {
           nil_ls.enable = true;
           texlab.enable = true;
@@ -334,13 +333,13 @@ interactiveShellInit = ''
         };
       };
 
-      # 4. CMP
+      # 4. CMP: 使用 disable 明确禁用未用上的映射
       cmp = {
         enable = true;
         settings = {
           mapping = {
-            "<C-n>" = "cmp.mapping(function(fallback) fallback() end, { 'i', 'c' })";
-            "<C-p>" = "cmp.mapping(function(fallback) fallback() end, { 'i', 'c' })";
+            "<C-n>" = "cmp.config.disable";
+            "<C-p>" = "cmp.config.disable";
             "<Tab>" = "cmp.mapping.select_next_item()";
             "<S-Tab>" = "cmp.mapping.select_prev_item()";
             "<CR>" = "cmp.mapping.confirm({ select = true })";
@@ -353,8 +352,9 @@ interactiveShellInit = ''
         };
       };
     };
-  };
-      programs.winbox = {
+  };  
+
+  programs.winbox = {
   enable = true;
   package = pkgs.winbox4; # 明确指定使用官方原生的 WinBox 4 
   openFirewall = true;     # 开启邻居发现防火墙端口
