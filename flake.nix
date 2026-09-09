@@ -249,87 +249,111 @@ interactiveShellInit = ''
         '';
       };
 
-      # Nixvim 配置
-      programs.nixvim = {
-        enable = true;
-        nixpkgs.source = inputs.nixpkgs;
-        globals.mapleader = " ";
-        extraConfigLua = ''
-          local fcitx_state = 1
-          local has_fcitx = vim.fn.executable("fcitx5-remote") == 1
-          if has_fcitx then
-            local augroup = vim.api.nvim_create_augroup("FcitxUltimate", { clear = true })
-            local function fcitx_cmd(arg) vim.fn.jobstart({"fcitx5-remote", arg}) end
-            vim.api.nvim_create_autocmd({ "InsertLeave", "CmdlineLeave" }, {
-              group = augroup,
-              callback = function()
-                local handle = io.popen("fcitx5-remote")
-                if handle then
-                  local status = tonumber(handle:read("*all"))
-                  handle:close()
-                  fcitx_state = status or 1
+    # Nixvim 配置
+  programs.nixvim = {
+    enable = true;
+    nixpkgs.source = inputs.nixpkgs;
+    plugins.lz-n.enable = true;
+    globals.mapleader = " ";
+
+    extraConfigLua = ''
+      local fcitx_state = 1
+      local has_fcitx = vim.fn.executable("fcitx5-remote") == 1
+      if has_fcitx then
+        local augroup = vim.api.nvim_create_augroup("FcitxUltimate", { clear = true })
+        local function fcitx_cmd(arg) vim.fn.jobstart({"fcitx5-remote", arg}) end
+
+        vim.api.nvim_create_autocmd({ "InsertLeave", "CmdlineLeave" }, {
+          group = augroup,
+          callback = function()
+            -- 使用异步 jobstart 代替阻塞式的 io.popen
+            vim.fn.jobstart({"fcitx5-remote"}, {
+              stdout_buffered = true,
+              on_stdout = function(_, data)
+                if data and data[1] then
+                  fcitx_state = tonumber(data[1]) or 1
                   if fcitx_state == 2 then fcitx_cmd("-c") end
                 end
               end,
             })
-            vim.api.nvim_create_autocmd("InsertEnter", {
-              group = augroup,
-              callback = function() if fcitx_state == 2 then fcitx_cmd("-o") end end,
-            })
-          end
-        '';
-        defaultEditor = true;
-        opts = {
-          number = true;
-          relativenumber = true;
-          shiftwidth = 2;
-          expandtab = true;
-          undofile = true;
-          mouse = "a";
-          clipboard = "unnamedplus";
-          ignorecase = true;
+          end,
+        })
+
+        vim.api.nvim_create_autocmd("InsertEnter", {
+          group = augroup,
+          callback = function() if fcitx_state == 2 then fcitx_cmd("-o") end end,
+        })
+      end
+    '';
+
+    defaultEditor = true;
+
+    opts = {
+      number = true;
+      relativenumber = true;
+      shiftwidth = 2;
+      expandtab = true;
+      undofile = true;
+      mouse = "a";
+      clipboard = "unnamedplus";
+      ignorecase = true;
+    };
+
+    plugins = {
+      web-devicons.enable = false;
+
+      # 1. Treesitter: 延迟到 BufReadPost 或 BufNewFile 事件触发
+      treesitter = {
+        enable = true;
+        lazyLoad.settings.event = [ "BufReadPost" "BufNewFile" ];
+      };
+
+      # 2. Telescope: 绑定快捷键与指令触发，按需加载
+       telescope = {
+        enable = true;
+        lazyLoad.settings = {
+          cmd = [ "Telescope" ];
         };
-        plugins = {
-          web-devicons.enable = false;
-          treesitter.enable = true;
-          telescope = {
-            enable = true;
-            keymaps = {
-              "<leader>ff" = "find_files";
-              "<leader>fg" = "live_grep";
-            };
-          };
-          lsp = {
-            enable = true;
-            servers = {
-              nil_ls.enable = true;
-              texlab.enable = true;
-              marksman.enable = true;
-              html.enable = true;
-              cssls.enable = true;
-              clangd.enable = true;
-            };
-          };
-          cmp = {
-            enable = true;
-            settings = {
-              mapping = {
-                "<C-n>" = "cmp.mapping(function(fallback) fallback() end, { 'i', 'c' })";
-                "<C-p>" = "cmp.mapping(function(fallback) fallback() end, { 'i', 'c' })";
-                "<Tab>" = "cmp.mapping.select_next_item()";
-                "<S-Tab>" = "cmp.mapping.select_prev_item()";
-                "<CR>" = "cmp.mapping.confirm({ select = true })";
-              }; 
-              sources = [
-                { name = "nvim_lsp"; }
-                { name = "buffer"; }
-                { name = "path"; }
-              ];
-            };
-          };
+        keymaps = {
+          "<leader>ff" = "find_files";
+          "<leader>fg" = "live_grep";
         };
       };
 
+      # 3. LSP: 延后至进入缓冲区/新建文件时挂载
+      lsp = {
+        enable = true;
+        lazyLoad.settings.event = [ "BufReadPost" "BufNewFile" ];
+        servers = {
+          nil_ls.enable = true;
+          texlab.enable = true;
+          marksman.enable = true;
+          html.enable = true;
+          cssls.enable = true;
+          clangd.enable = true;
+        };
+      };
+
+      # 4. CMP
+      cmp = {
+        enable = true;
+        settings = {
+          mapping = {
+            "<C-n>" = "cmp.mapping(function(fallback) fallback() end, { 'i', 'c' })";
+            "<C-p>" = "cmp.mapping(function(fallback) fallback() end, { 'i', 'c' })";
+            "<Tab>" = "cmp.mapping.select_next_item()";
+            "<S-Tab>" = "cmp.mapping.select_prev_item()";
+            "<CR>" = "cmp.mapping.confirm({ select = true })";
+          }; 
+          sources = [
+            { name = "nvim_lsp"; }
+            { name = "buffer"; }
+            { name = "path"; }
+          ];
+        };
+      };
+    };
+  };
       programs.winbox = {
   enable = true;
   package = pkgs.winbox4; # 明确指定使用官方原生的 WinBox 4 
