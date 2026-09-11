@@ -58,16 +58,9 @@
       # 远程登陆
       services.openssh.enable = true;
       networking.firewall.allowedTCPPorts = [ 22 ];
-
-      # 开启 daed 服务与网页面板防火墙端口
-      # services.daed = {
-      #   enable = true;
-      #   openFirewall = {
-      #     enable = true;
-      #     port = 2023;
-      #   };
-      # };
-
+      # v2raya
+      services.v2raya.enable = true;
+      boot.kernelModules = [ "tun" ];
       # 桌面环境
       services.xserver.enable = true;
       services.displayManager.gdm.enable = true;
@@ -160,8 +153,6 @@
           update = "sudo nixos-rebuild switch --flake .#$(hostname)";
         };
         promptInit = ''
-          export http_proxy=http://127.0.0.1:7897
-          export https_proxy=http://127.0.0.1:7897
           export PROMPT='%F{cyan}%n@%m%f:%F{blue}%~%f$ '
         '';
 interactiveShellInit = ''
@@ -403,7 +394,6 @@ interactiveShellInit = ''
           baseConfig
           ./xps.nix
           inputs.nixvim.nixosModules.nixvim
-          # inputs.daeuniverse.nixosModules.daed
           commonModule
           {
             networking.hostName = "xps"; 
@@ -429,7 +419,6 @@ interactiveShellInit = ''
           baseConfig
           ./surface.nix
           inputs.nixvim.nixosModules.nixvim
-          # inputs.daeuniverse.nixosModules.daed
           commonModule
           { 
             networking.hostName = "surface";
@@ -444,7 +433,6 @@ interactiveShellInit = ''
           baseConfig
           ./desktop.nix
           inputs.nixvim.nixosModules.nixvim
-          # inputs.daeuniverse.nixosModules.daed
           commonModule
           nvidiaModule
           { networking.hostName = "desktop"; }
