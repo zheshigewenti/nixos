@@ -58,9 +58,6 @@
       # 远程登陆
       services.openssh.enable = true;
       networking.firewall.allowedTCPPorts = [ 22 ];
-      # v2raya
-      services.v2raya.enable = true;
-      boot.kernelModules = [ "tun" ];
       # 桌面环境
       services.xserver.enable = true;
       services.displayManager.gdm.enable = true;
