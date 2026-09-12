@@ -3,6 +3,10 @@
     nixpkgs.hostPlatform = "x86_64-linux";
     imports = [
       ../modules/common.nix
+      ../modules/tmux.nix
+      ../modules/input-method.nix
+      ../modules/nixvim.nix
+      ../modules/zsh.nix
       inputs.nixvim.nixosModules.nixvim
     ];
   };
