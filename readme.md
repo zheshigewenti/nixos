@@ -1,3 +1,4 @@
+```shell
 ~/nixos/
 ├── flake.nix              # 根入口：声明 inputs (nixpkgs, nixvim) 与 outputs (nixosConfigurations)
 ├── flake.lock             # 依赖版本锁定文件
@@ -10,7 +11,7 @@
     ├── nixvim.nix         # Nixvim 文本编辑器独立模块
     ├── nvidia.nix         # NVIDIA 显卡驱动模块
     └── zsh.nix            # Zsh 环境配置模块:
-```shell
+
 nix flake update #更新lock文件
 sudo nixos-rebuild switch --flake .#hostname
 sudo nixos-rebuild switch --flake github:zheshigewenti/nixos#hostname #云端部署
