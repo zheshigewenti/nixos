@@ -1,3 +1,15 @@
+~/nixos/
+├── flake.nix              # 根入口：声明 inputs (nixpkgs, nixvim) 与 outputs (nixosConfigurations)
+├── flake.lock             # 依赖版本锁定文件
+├── hosts/                 # 主机物理隔离层（单文件声明）
+│   ├── xps.nix            # XPS 专属硬件与个性化配置
+│   ├── surface.nix        # Surface 专属硬件与个性化配置
+│   └── desktop.nix        # Desktop 专属硬件与个性化配置
+└── modules/               # 共享与功能模块层
+    ├── common.nix         # 基础公共配置（汇聚基础包、用户等）
+    ├── nixvim.nix         # Nixvim 文本编辑器独立模块
+    ├── nvidia.nix         # NVIDIA 显卡驱动模块
+    └── zsh.nix            # Zsh 环境配置模块:
 ```shell
 nix flake update #更新lock文件
 sudo nixos-rebuild switch --flake .#hostname
