@@ -1,7 +1,7 @@
-{pkgs, ...}: {
-  # 输入法配置
+{ pkgs, ... }: {
   i18n.inputMethod = {
     enable = true;
+    type = "fcitx5";
     fcitx5 = {
       waylandFrontend = true;
       addons = with pkgs; [
@@ -11,7 +11,6 @@
     };
   };
 
-  # 字体配置（与中文字体渲染绑定）
   fonts = {
     packages = with pkgs; [
       noto-fonts
