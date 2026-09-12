@@ -10,7 +10,7 @@
     ├── common.nix         # 基础公共配置（汇聚基础包、用户等）
     ├── nixvim.nix         # Nixvim 文本编辑器独立模块
     ├── nvidia.nix         # NVIDIA 显卡驱动模块
-    └── zsh.nix            # Zsh 环境配置模块:
+    └── zsh.nix            # Zsh 环境配置模块
 
 nix flake update #更新lock文件
 sudo nixos-rebuild switch --flake .#hostname
