@@ -3,29 +3,36 @@
   inputs,
   ...
 }: {
-  imports = [
-    ./zsh.nix
-    ./nixvim.nix
-  ];
-
+  # 内核与引导
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # 网络与时区语言
   networking.networkmanager.enable = true;
   time.timeZone = "Asia/Shanghai";
   i18n.defaultLocale = "zh_CN.UTF-8";
 
+  # Nix 系统设置
   nix.settings = {
     experimental-features = ["nix-command" "flakes"];
     auto-optimise-store = true;
   };
 
+  nix.gc = {
+    automatic = true;
+    dates = "daily";
+    options = "--delete-older-than 7d";
+  };
+
   nixpkgs.config.allowUnfree = true;
+
+  # 限制 CPU 最大性能（限制发热/风扇噪声）
   services.udev.extraRules = ''
-    ACTION=="add", SUBSYSTEM=="module", KERNEL=="intel_pstate", ATTR{parameters/max_perf_pct}="80"
+    ACTION=="add", SUBSYSTEM=="cpu", ATTR{intel_pstate/max_perf_pct}="80"
   '';
 
+  # 服务
   services.openssh.enable = true;
   networking.firewall.allowedTCPPorts = [22];
 
@@ -35,6 +42,7 @@
 
   services.flatpak.enable = true;
 
+  # 硬件与图形
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
@@ -43,20 +51,27 @@
     ];
   };
 
-  environment.variables = {
-    GTK_IM_MODULE = "fcitx";
-    QT_IM_MODULE = "fcitx";
-    XMODIFIERS = "@im=fcitx";
-    SDL_IM_MODULE = "fcitx";
-    SSL_CERT_FILE = "/etc/ssl/certs/ca-bundle.crt";
+  # 软件程序与特定模块配置
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
   };
 
+  programs.winbox = {
+    enable = true;
+    package = pkgs.winbox4;
+    openFirewall = true;
+  };
+
+  # 用户配置
   users.users.vincent = {
     isNormalUser = true;
     description = "vincent";
     extraGroups = ["networkmanager" "wheel"];
     shell = pkgs.zsh;
     packages = with pkgs; [
+      # TeX 环境
       (texliveSmall.withPackages (ps:
         with ps; [
           scheme-small
@@ -78,75 +93,34 @@
           trimspaces
           tools
         ]))
+
+      # 办公与日常
       google-chrome
-      flatpak
       clash-verge-rev
       wpsoffice-cn
-      ffmpeg-full
       zotero
+      wget
+
+      # 开发工具与CLI
       git
       lazygit
       gh
       ripgrep
       fd
       fastfetch
-      steam
-      steam-run
+      hugo
+      ffmpeg-full
+
+      # 网络与诊断
       tshark
       nmap
-      hugo
+
+      # 虚拟机与游戏
       quickemu
       quickgui
-      wget
+      steam-run
       vcmi
     ];
-  };
-
-  programs.tmux = {
-    enable = true;
-    shortcut = "a";
-    keyMode = "vi";
-    extraConfig = ''
-      set -g mouse on
-      set -g status-style "bg=default"
-      set -g status-right "#{=21:pane_title} %H:%M"
-      unbind '"'
-      unbind %
-      bind h select-pane -L
-      bind j select-pane -D
-      bind k select-pane -U
-      bind l select-pane -R
-      bind | split-window -h -c "#{pane_current_path}"
-      bind - split-window -v -c "#{pane_current_path}"
-    '';
-  };
-
-  programs.winbox = {
-    enable = true;
-    package = pkgs.winbox4;
-    openFirewall = true;
-  };
-
-  i18n.inputMethod = {
-    enable = true;
-    type = "fcitx5";
-    fcitx5.waylandFrontend = true;
-    fcitx5.addons = with pkgs; [qt6Packages.fcitx5-chinese-addons fcitx5-gtk];
-  };
-
-  fonts = {
-    packages = with pkgs; [noto-fonts noto-fonts-cjk-sans noto-fonts-cjk-serif noto-fonts-color-emoji];
-    fontconfig.defaultFonts = {
-      serif = ["Noto Serif CJK SC"];
-      sansSerif = ["Noto Sans CJK SC"];
-      monospace = ["Noto Sans Mono CJK SC"];
-    };
-  };
-
-  nix.gc = {
-    automatic = true;
-    dates = "daily";
-    options = "--delete-older-than 7d";
   };
 
   system.stateVersion = "25.11";
