@@ -1,38 +1,27 @@
 {
+  description = "Refactored NixOS Configuration with flake-parts";
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
     };
   };
 
-  outputs = inputs @ {
-    self,
-    nixpkgs,
-    ...
-  }: let
-    baseConfig = {
-      nixpkgs.hostPlatform = "x86_64-linux";
+  outputs = inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" ];
+      
       imports = [
-        ./modules/common.nix
-        inputs.nixvim.nixosModules.nixvim
+        ./modules/configurations.nix
       ];
     };
-  in {
-    nixosConfigurations = {
-      xps = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [baseConfig ./hosts/xps.nix];
-      };
-      surface = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [baseConfig ./hosts/surface.nix];
-      };
-      desktop = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [baseConfig ./hosts/desktop.nix];
-      };
-    };
-  };
 }
