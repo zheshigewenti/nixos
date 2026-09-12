@@ -1,4 +1,8 @@
-{ pkgs, inputs, ... }: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
   imports = [
     ./zsh.nix
     ./nixvim.nix
@@ -11,20 +15,20 @@
   networking.networkmanager.enable = true;
   time.timeZone = "Asia/Shanghai";
   i18n.defaultLocale = "zh_CN.UTF-8";
-  
+
   nix.settings = {
     experimental-features = ["nix-command" "flakes"];
     auto-optimise-store = true;
   };
-  
+
   nixpkgs.config.allowUnfree = true;
   services.udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="module", KERNEL=="intel_pstate", ATTR{parameters/max_perf_pct}="80"
   '';
 
   services.openssh.enable = true;
-  networking.firewall.allowedTCPPorts = [ 22 ];
-  
+  networking.firewall.allowedTCPPorts = [22];
+
   services.xserver.enable = true;
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
@@ -50,13 +54,51 @@
   users.users.vincent = {
     isNormalUser = true;
     description = "vincent";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = ["networkmanager" "wheel"];
     shell = pkgs.zsh;
     packages = with pkgs; [
-      (texliveSmall.withPackages (ps: with ps; [
-        scheme-small ctex amsmath titlesec enumitem geometry xcolor hyperref cleveref natbib fontawesome5 lastpage changepage paracol needspace bookmark trimspaces tools
-      ]))
-      google-chrome flatpak clash-verge-rev wpsoffice-cn ffmpeg-full zotero git lazygit gh ripgrep fd fastfetch steam steam-run tshark nmap hugo quickemu quickgui wget vcmi
+      (texliveSmall.withPackages (ps:
+        with ps; [
+          scheme-small
+          ctex
+          amsmath
+          titlesec
+          enumitem
+          geometry
+          xcolor
+          hyperref
+          cleveref
+          natbib
+          fontawesome5
+          lastpage
+          changepage
+          paracol
+          needspace
+          bookmark
+          trimspaces
+          tools
+        ]))
+      google-chrome
+      flatpak
+      clash-verge-rev
+      wpsoffice-cn
+      ffmpeg-full
+      zotero
+      git
+      lazygit
+      gh
+      ripgrep
+      fd
+      fastfetch
+      steam
+      steam-run
+      tshark
+      nmap
+      hugo
+      quickemu
+      quickgui
+      wget
+      vcmi
     ];
   };
 
@@ -89,23 +131,23 @@
     enable = true;
     type = "fcitx5";
     fcitx5.waylandFrontend = true;
-    fcitx5.addons = with pkgs; [ qt6Packages.fcitx5-chinese-addons fcitx5-gtk ];
+    fcitx5.addons = with pkgs; [qt6Packages.fcitx5-chinese-addons fcitx5-gtk];
   };
 
   fonts = {
-    packages = with pkgs; [ noto-fonts noto-fonts-cjk-sans noto-fonts-cjk-serif noto-fonts-color-emoji ];
+    packages = with pkgs; [noto-fonts noto-fonts-cjk-sans noto-fonts-cjk-serif noto-fonts-color-emoji];
     fontconfig.defaultFonts = {
-      serif = [ "Noto Serif CJK SC" ];
-      sansSerif = [ "Noto Sans CJK SC" ];
-      monospace = [ "Noto Sans Mono CJK SC" ];
+      serif = ["Noto Serif CJK SC"];
+      sansSerif = ["Noto Sans CJK SC"];
+      monospace = ["Noto Sans Mono CJK SC"];
     };
   };
 
-  nix.gc = { 
+  nix.gc = {
     automatic = true;
     dates = "daily";
     options = "--delete-older-than 7d";
   };
-  
+
   system.stateVersion = "25.11";
 }

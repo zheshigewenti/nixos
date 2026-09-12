@@ -1,16 +1,16 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   programs.zsh = {
     enable = true;
     enableCompletion = true;
     autosuggestions.enable = true;
     syntaxHighlighting.enable = true;
     shellAliases = {
-      f = "fastfetch"; 
-      t = "top"; 
-      vi = "nvim"; 
-      lg = "lazygit"; 
+      f = "fastfetch";
+      t = "top";
+      vi = "nvim";
+      lg = "lazygit";
       grep = "grep --color=auto -n";
-      ls = "ls --color=auto"; 
+      ls = "ls --color=auto";
       update = "sudo nixos-rebuild switch --flake .#$(hostname)";
     };
     promptInit = ''
@@ -26,7 +26,7 @@
         else
           target="''${target/#\~/$HOME}"
         fi
-        
+
         if [ -n "$target" ] && [ -f "$target" ]; then
           cd "$(dirname "$target")" && nvim "$(basename "$target")"
         else
@@ -37,7 +37,7 @@
       _ff_tab_complete() {
         if [[ $BUFFER =~ '^ff[[:space:]]+(.*)$' ]]; then
           local query="$match[1]"
-          
+
           if [[ "$query" == */* || "$query" == \~* ]]; then
             zle expand-or-complete
             return 0
@@ -67,15 +67,15 @@
             BUFFER="ff $HOME/$target"
             CURSOR=$#BUFFER
           fi
-          
+
           zle autosuggest-clear 2>/dev/null
           zle redisplay
           return 0
         fi
-        
+
         zle expand-or-complete
       }
-      
+
       zle -N _ff_tab_complete
       bindkey '^I' _ff_tab_complete
     '';
