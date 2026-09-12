@@ -1,4 +1,4 @@
-{ inputs, ... }: {
+{inputs, ...}: {
   programs.nixvim = {
     enable = true;
     nixpkgs.source = inputs.nixpkgs;
@@ -52,12 +52,12 @@
 
       treesitter = {
         enable = true;
-        lazyLoad.settings.event = [ "BufReadPost" "BufNewFile" ];
+        lazyLoad.settings.event = ["BufReadPost" "BufNewFile"];
       };
 
       telescope = {
         enable = true;
-        lazyLoad.settings.cmd = [ "Telescope" ];
+        lazyLoad.settings.cmd = ["Telescope"];
         keymaps = {
           "<leader>ff" = "find_files";
           "<leader>fg" = "live_grep";
@@ -66,7 +66,7 @@
 
       lsp = {
         enable = true;
-        lazyLoad.settings.event = [ "FileType" ];
+        lazyLoad.settings.event = ["FileType"];
         servers = {
           nixd.enable = true;
           texlab.enable = true;
@@ -86,11 +86,11 @@
             "<Tab>" = "cmp.mapping.select_next_item()";
             "<S-Tab>" = "cmp.mapping.select_prev_item()";
             "<CR>" = "cmp.mapping.confirm({ select = true })";
-          }; 
+          };
           sources = [
-            { name = "nvim_lsp"; }
-            { name = "buffer"; }
-            { name = "path"; }
+            {name = "nvim_lsp";}
+            {name = "buffer";}
+            {name = "path";}
           ];
         };
       };
