@@ -6,8 +6,6 @@
   ...
 }: {
   imports = [
-    ../modules/common.nix
-    ../modules/nixvim.nix
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
@@ -34,13 +32,6 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-  # XPS 专属配置
-  boot.extraModprobeConfig = ''
-    blacklist i8k
-    blacklist dell_wmi_ddv
-    blacklist dell_smm_hwmon
-    blacklist dell_smm
-  '';
   boot.blacklistedKernelModules = [
     "dell_wmi_ddv"
     "i8k"
