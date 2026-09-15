@@ -41,7 +41,6 @@
   services.desktopManager.gnome.enable = true;
 
   services.flatpak.enable = true;
-
   # 硬件与图形
   hardware.graphics = {
     enable = true;
