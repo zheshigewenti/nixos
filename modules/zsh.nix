@@ -15,6 +15,7 @@
     };
     promptInit = ''
       export PROMPT='%F{cyan}%n@%m%f:%F{blue}%~%f$ '
+      export all_proxy="socks5://127.0.0.1:7897"
     '';
     interactiveShellInit = ''
       unsetopt BEEP LIST_BEEP HIST_BEEP
