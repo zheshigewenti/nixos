@@ -32,9 +32,6 @@
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-systemd.tmpfiles.rules = [
-  "w /sys/devices/system/cpu/intel_pstate/no_turbo - - - - 1"
-];
 
   boot.blacklistedKernelModules = [
     "dell_wmi_ddv"

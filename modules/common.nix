@@ -30,8 +30,8 @@
   # 限制 CPU 最大性能（限制发热/风扇噪声）
   systemd.tmpfiles.rules = [
     "w /sys/devices/system/cpu/intel_pstate/max_perf_pct - - - - 80"
+    "w /sys/devices/system/cpu/intel_pstate/no_turbo - - - - 1"
   ];
-
   # 服务
   services.openssh.enable = true;
   networking.firewall.allowedTCPPorts = [22];
