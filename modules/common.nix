@@ -57,11 +57,11 @@
     dedicatedServer.openFirewall = true;
   };
 
-  programs.winbox = {
-    enable = true;
-    package = pkgs.winbox4;
-    openFirewall = true;
-  };
+  # programs.winbox = {
+  #   enable = true;
+  #   package = pkgs.winbox4;
+  #   openFirewall = true;
+  # };
 
   # 用户配置
   users.users.vincent = {
@@ -97,7 +97,7 @@
       google-chrome
       clash-verge-rev
       wpsoffice-cn
-      zotero
+      # zotero
       wget
 
       # 开发工具与CLI
