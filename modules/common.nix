@@ -97,7 +97,7 @@
       google-chrome
       clash-verge-rev
       wpsoffice-cn
-      # zotero
+      zotero
       wget
 
       # 开发工具与CLI
