@@ -33,14 +33,16 @@
     "w /sys/devices/system/cpu/intel_pstate/no_turbo - - - - 1"
   ];
   # 服务
-  services.openssh.enable = true;
-  networking.firewall.allowedTCPPorts = [22];
+  networking.firewall.allowedTCPPorts = [22 3389];
+  networking.firewall.allowedUDPPorts = [3389];
 
+  services.openssh.enable = true;
+  services.flatpak.enable = true;
   services.xserver.enable = true;
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
+  services.gnome.gnome-remote-desktop.enable = true;
 
-  services.flatpak.enable = true;
   # 硬件与图形
   hardware.graphics = {
     enable = true;
