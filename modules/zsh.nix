@@ -11,7 +11,7 @@
       lg = "lazygit";
       grep = "grep --color=auto -n";
       ls = "ls --color=auto";
-      update = "sudo nixos-rebuild switch --flake .#$(hostname)";
+      update = "sudo -E nixos-rebuild switch --flake .#$(hostname)";
     };
     promptInit = ''
       export PROMPT='%F{cyan}%n@%m%f:%F{blue}%~%f$ '
