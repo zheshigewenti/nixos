@@ -1,22 +1,3 @@
-```shell
-ALL_PROXY=socks5://127.0.0.1:7897 sudo -E nixos-rebuild switch --flake .#xps
-nix flake update #更新lock文件
-sudo nixos-rebuild switch --flake .#hostname
-sudo nixos-rebuild switch --flake github:zheshigewenti/nixos#hostname #云端部署
-nix run nixpkgs#git -- clone https://github.com/zheshigewenti/nixos.git
-sudo nixos-generate-config --show-hardware-config > hostname.nix #硬件配置覆盖
-sudo chown -R vincent nixos #将文件所有者递归改为vincent
-sudo nixos-rebuild boot --install-bootloader #重新覆盖引导程序
-sudo nix-env --list-generations --profile /nix/var/nix/profiles/system #列出nixos当前保留了哪些版本
-sudo nix-env --delete-generations +2 --profile /nix/var/nix/profiles/system #保留最后2个版本
-sudo nix-collect-garbage #删除无用的版本
-sudo nix-store --gc #清理所有不再被任何版本引用的包
-sudo journalctl --rotate #将当前日志封存归档
-sudo journalctl --vacuum-time=1s #清理1秒前的日志
-```
-
----
-
 # NixOS 配置
 
 ## 主机
@@ -24,17 +5,32 @@ sudo journalctl --vacuum-time=1s #清理1秒前的日志
 - `xps`：当前机器
 - `desktop`：新机器，首次使用前需要生成 `hosts/desktop-hardware.nix`
 
-## 部署
+## 日常部署
 
 ```shell
+cd /home/vincent/nixos
+
 # 先验证，不激活
 sudo nixos-rebuild build --flake .#xps
 
 # 应用
-sudo -E nixos-rebuild switch --flake .#xps
+sudo nixos-rebuild switch --flake .#xps
 
 # 需要代理时
 ALL_PROXY=socks5://127.0.0.1:7897 sudo -E nixos-rebuild switch --flake .#xps
+
+# 从 GitHub 拉配置部署（先 push）
+sudo nixos-rebuild switch --flake github:zheshigewenti/nixos#xps
+```
+
+## 更新
+
+```shell
+# 更新所有 flake input
+nix flake update
+
+# 只更新 nixpkgs
+nix flake update nixpkgs
 ```
 
 ## 新机器 desktop
@@ -51,7 +47,7 @@ nixos-rebuild build --flake .#desktop
 nixos-rebuild switch --flake .#desktop
 ```
 
-或者使用 `nixos-anywhere` 自动生成硬件配置并安装：
+或者用 `nixos-anywhere` 自动生成硬件配置并安装：
 
 ```shell
 nix run github:nix-community/nixos-anywhere -- \
@@ -61,25 +57,52 @@ nix run github:nix-community/nixos-anywhere -- \
   --target-host root@新机器IP
 ```
 
-## 更新
+## 硬件与引导
 
 ```shell
-nix flake update
+# 重新生成当前机器的硬件配置
+sudo nixos-generate-config --show-hardware-config > hosts/xps-hardware.nix
+
+# 重新安装 systemd-boot
+sudo nixos-rebuild boot --install-bootloader
+```
+
+## 版本与回滚
+
+```shell
+# 列出系统 generation
+sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
+
+# 只保留最后 2 个 generation
+sudo nix-env --delete-generations +2 --profile /nix/var/nix/profiles/system
+
+# 回滚到上一个 generation
+sudo nixos-rebuild switch --rollback
 ```
 
 ## 清理
 
 ```shell
+# 删除旧 generation 并执行 GC
 sudo nix-collect-garbage -d
+
+# 对 store 做硬链接去重
 sudo nix store optimise
+
+# 清理日志
+sudo journalctl --rotate
 sudo journalctl --vacuum-time=7d
 ```
 
-## 系统版本
+说明：`nix-collect-garbage` 已经包含 GC，不需要再单独跑 `nix-store --gc`。
+
+## 克隆仓库
 
 ```shell
-sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
-sudo nix-env --delete-generations +2 --profile /nix/var/nix/profiles/system
+nix run nixpkgs#git -- clone https://github.com/zheshigewenti/nixos.git
+
+# 如果文件属主不对
+sudo chown -R vincent:users /home/vincent/nixos
 ```
 
 ## 目录
@@ -88,12 +111,12 @@ sudo nix-env --delete-generations +2 --profile /nix/var/nix/profiles/system
 flake.nix
 modules/
   common.nix          # 聚合 import
-  boot.nix            # 内核、systemd-boot
+  boot.nix            # 内核、systemd-boot、/tmp 清理
   nix.nix             # Nix 设置、GC、cache
   network.nix         # 网络、时区、locale
   desktop.nix         # GNOME、GDM、Flatpak
   graphics.nix        # 通用图形设置
-  system.nix          # journald、zram、stateVersion
+  system.nix          # journald、zram、swappiness、stateVersion
   packages.nix        # 用户和软件包
   gaming.nix          # Steam
   fonts.nix           # 字体
