@@ -8,6 +8,9 @@
 
   networking.hostName = "xps";
 
+  # 减少 SSD 上的 atime 写入
+  fileSystems."/".options = ["noatime"];
+
   # XPS 是 Intel 核显，需要 Intel 的 VA-API 驱动
   hardware.graphics.extraPackages = with pkgs; [
     intel-media-driver

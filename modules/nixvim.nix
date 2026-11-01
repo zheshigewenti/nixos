@@ -102,7 +102,6 @@
 
       cmp = {
         enable = true;
-        lazyLoad.settings.event = ["InsertEnter"];
         settings = {
           mapping = {
             "<C-n>" = "cmp.config.disable";
