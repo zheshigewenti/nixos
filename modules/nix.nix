@@ -13,6 +13,7 @@
     automatic = true;
     dates = "daily";
     options = "--delete-older-than 7d";
+    randomizedDelaySec = "1h";
   };
 
   nixpkgs.config.allowUnfree = true;
