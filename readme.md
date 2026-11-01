@@ -1,36 +1,28 @@
 # NixOS 配置
 
-## 主机
-
-- `xps`：当前机器
-- `desktop`：新机器，首次使用前需要生成 `hosts/desktop-hardware.nix`
-
 ## 日常部署
 
 ```shell
 cd /home/vincent/nixos
 
-# 先验证，不激活
+# 验证部署
 sudo nixos-rebuild build --flake .#xps
 
-# 应用
+# 实际部署
 sudo nixos-rebuild switch --flake .#xps
 
-# 需要代理时
+# 代理部署
 ALL_PROXY=socks5://127.0.0.1:7897 sudo -E nixos-rebuild switch --flake .#xps
 
-# 从 GitHub 拉配置部署（先 push）
+# 远程部署
 sudo nixos-rebuild switch --flake github:zheshigewenti/nixos#xps
 ```
 
 ## 更新
 
 ```shell
-# 更新所有 flake input
+# 更新flake
 nix flake update
-
-# 只更新 nixpkgs
-nix flake update nixpkgs
 ```
 
 ## 新机器 desktop
@@ -94,7 +86,6 @@ sudo journalctl --rotate
 sudo journalctl --vacuum-time=7d
 ```
 
-说明：`nix-collect-garbage` 已经包含 GC，不需要再单独跑 `nix-store --gc`。
 
 ## 克隆仓库
 
