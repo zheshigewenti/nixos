@@ -1,10 +1,6 @@
 {inputs, ...}: let
   commonModules = [
-    ./common.nix
-    ./tmux.nix
-    ./input-method.nix
-    ./nixvim.nix
-    ./zsh.nix
+    ../modules/common.nix
     inputs.nixvim.nixosModules.nixvim
   ];
   hosts = ["xps" "desktop"];
@@ -13,6 +9,6 @@ in {
     inputs.nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = {inherit inputs;};
-      modules = commonModules ++ [../hosts/${host}.nix];
+      modules = commonModules ++ [./${host}.nix];
     });
 }
