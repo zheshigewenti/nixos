@@ -11,19 +11,24 @@
       lg = "lazygit";
       grep = "grep --color=auto -n";
       ls = "ls --color=auto";
-      update = "sudo -E nixos-rebuild switch --flake .#$(hostname)";
+      update = "cd /home/vincent/nixos && sudo -E nixos-rebuild switch --flake .#$(hostname)";
     };
     promptInit = ''
       export PROMPT='%F{cyan}%n@%m%f:%F{blue}%~%f$ '
-      export all_proxy="socks5://127.0.0.1:7897"
+      export ALL_PROXY="socks5://127.0.0.1:7897"
     '';
     interactiveShellInit = ''
       unsetopt BEEP LIST_BEEP HIST_BEEP
 
+      # 历史记录
+      HISTSIZE=100000
+      SAVEHIST=100000
+      setopt SHARE_HISTORY HIST_IGNORE_DUPS HIST_REDUCE_BLANKS
+
       ff() {
         local target="$1"
         if [ -z "$target" ]; then
-          target=$(fd -t f . "$HOME" | head -n 1)
+          target=$(fd -t f --max-results 1 . "$HOME")
         else
           target="''${target/#\~/$HOME}"
         fi
@@ -39,6 +44,11 @@
         if [[ $BUFFER =~ '^ff[[:space:]]+(.*)$' ]]; then
           local query="$match[1]"
 
+          if [ -z "$query" ]; then
+            zle expand-or-complete
+            return 0
+          fi
+
           if [[ "$query" == */* || "$query" == \~* ]]; then
             zle expand-or-complete
             return 0
@@ -46,7 +56,9 @@
 
           local target
           if [ -n "$query" ]; then
-            target=$(cd "$HOME" && fd -t f -E .cache -E .git -E .cargo -E .rustup "$query" 2>/dev/null \
+            target=$(cd "$HOME" && fd -t f --max-results 200 \
+                     -E .cache -E .git -E .cargo -E .rustup \
+                     -E .local -E .npm -E node_modules "$query" 2>/dev/null \
                      | awk -v q="$query" '
                      {
                        path = $0;

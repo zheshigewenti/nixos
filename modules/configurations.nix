@@ -7,24 +7,12 @@
     ./zsh.nix
     inputs.nixvim.nixosModules.nixvim
   ];
+  hosts = ["xps" "desktop"];
 in {
-  flake.nixosConfigurations = {
-    xps = inputs.nixpkgs.lib.nixosSystem {
+  flake.nixosConfigurations = inputs.nixpkgs.lib.genAttrs hosts (host:
+    inputs.nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = {inherit inputs;};
-      modules = commonModules ++ [../hosts/xps.nix];
-    };
-
-    surface = inputs.nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      specialArgs = {inherit inputs;};
-      modules = commonModules ++ [../hosts/surface.nix];
-    };
-
-    desktop = inputs.nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      specialArgs = {inherit inputs;};
-      modules = commonModules ++ [../hosts/desktop.nix];
-    };
-  };
+      modules = commonModules ++ [../hosts/${host}.nix];
+    });
 }
