@@ -1,4 +1,4 @@
-{inputs, ...}: {
+{pkgs, inputs, ...}: {
   programs.nixvim = {
     enable = true;
     nixpkgs.source = inputs.nixpkgs;
@@ -52,6 +52,29 @@
 
       treesitter = {
         enable = true;
+        # 默认会安装全部 300+ 个 grammar，这里只保留实际会用到的语言
+        grammarPackages = with pkgs.vimPlugins.nvim-treesitter.builtGrammars; [
+          bash
+          c
+          cpp
+          css
+          html
+          javascript
+          json
+          latex
+          lua
+          markdown
+          markdown_inline
+          nix
+          python
+          rust
+          toml
+          tsx
+          typescript
+          vim
+          vimdoc
+          yaml
+        ];
         lazyLoad.settings.event = ["BufReadPost" "BufNewFile"];
       };
 
@@ -79,6 +102,7 @@
 
       cmp = {
         enable = true;
+        lazyLoad.settings.event = ["InsertEnter"];
         settings = {
           mapping = {
             "<C-n>" = "cmp.config.disable";
