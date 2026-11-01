@@ -101,13 +101,13 @@ sudo chown -R vincent:users /home/vincent/nixos
 ```text
 flake.nix
 modules/
-  common.nix          # 聚合 import
+  common.nix          # 聚合所有共享模块
   boot.nix            # 内核、systemd-boot、/tmp 清理
   nix.nix             # Nix 设置、GC、cache
   network.nix         # 网络、时区、locale
-  desktop.nix         # GNOME、GDM、Flatpak
+  gnome.nix           # GNOME、GDM、Flatpak
   graphics.nix        # 通用图形设置
-  system.nix          # journald、zram、swappiness、stateVersion
+  system.nix          # journald、zram、swappiness
   packages.nix        # 用户和软件包
   gaming.nix          # Steam
   fonts.nix           # 字体
@@ -115,10 +115,11 @@ modules/
   nixvim.nix          # Neovim
   tmux.nix            # tmux
   zsh.nix             # zsh
-  configurations.nix  # flake-parts host 定义
 hosts/
+  configurations.nix  # flake-parts host 定义
   xps.nix
   xps-hardware.nix
   desktop.nix
   desktop-hardware.nix
 ```
+

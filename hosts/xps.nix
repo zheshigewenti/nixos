@@ -7,6 +7,7 @@
   ];
 
   networking.hostName = "xps";
+  system.stateVersion = "25.11";
 
   # 减少 SSD 上的 atime 写入
   fileSystems."/".options = ["noatime"];

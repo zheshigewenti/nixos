@@ -21,7 +21,7 @@
       systems = [ "x86_64-linux" ];
       
       imports = [
-        ./modules/configurations.nix
+        ./hosts/configurations.nix
       ];
     };
 }
