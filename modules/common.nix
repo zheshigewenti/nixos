@@ -97,6 +97,7 @@
 
       # 办公与日常
       google-chrome
+      opencode
       clash-verge-rev
       wpsoffice-cn
       # zotero
