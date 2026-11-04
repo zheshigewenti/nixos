@@ -18,7 +18,7 @@
   ];
 
   # xps 需要的远程访问
-  networking.firewall.allowedTCPPorts = [22 3389];
+  networking.firewall.allowedTCPPorts = [3389];
   networking.firewall.allowedUDPPorts = [3389];
 
   services.openssh.enable = true;
