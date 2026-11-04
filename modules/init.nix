@@ -6,11 +6,11 @@
     ./gnome.nix
     ./graphics.nix
     ./packages.nix
-    ./gaming.nix
+    ./steam.nix
     ./system.nix
     ./fonts.nix
     ./tmux.nix
-    ./input-method.nix
+    ./fcitx5.nix
     ./nixvim.nix
     ./zsh.nix
   ];

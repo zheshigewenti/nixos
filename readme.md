@@ -76,7 +76,7 @@ sudo chown -R vincent:users /home/vincent/nixos
 ```text
 flake.nix
 modules/
-  common.nix          # 聚合所有共享模块
+  init.nix            # 入口：聚合所有共享模块
   boot.nix            # 内核、systemd-boot、/tmp 清理
   nix.nix             # Nix 设置、GC、cache
   network.nix         # 网络、时区、locale
@@ -84,9 +84,9 @@ modules/
   graphics.nix        # 通用图形设置
   system.nix          # journald、zram、swappiness
   packages.nix        # 用户和软件包
-  gaming.nix          # Steam
+  steam.nix           # Steam
   fonts.nix           # 字体
-  input-method.nix    # fcitx5
+  fcitx5.nix          # fcitx5
   nixvim.nix          # Neovim
   tmux.nix            # tmux
   zsh.nix             # zsh

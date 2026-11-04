@@ -1,6 +1,6 @@
 {inputs, ...}: let
   commonModules = [
-    ../modules/common.nix
+    ../modules/init.nix
     inputs.nixvim.nixosModules.nixvim
   ];
   hosts = ["xps" "desktop"];
