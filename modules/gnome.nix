@@ -13,7 +13,6 @@
     epiphany
     gnome-maps
     gnome-weather
-    gnome-music
     gnome-contacts
     gnome-calendar
     gnome-clocks
@@ -22,8 +21,8 @@
     gnome-font-viewer
     baobab
     simple-scan
-    snapshot
     decibels
+    gnome-characters 
     gnome-initial-setup
     gnome-user-share
     gnome-color-manager

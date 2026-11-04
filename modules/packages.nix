@@ -49,13 +49,11 @@ in {
       wl-clipboard
 
       # 网络与诊断
-      tshark
       nmap
 
       # 虚拟机与游戏
       quickgui
       virt-viewer
-      steam-run
       vcmi
     ];
   };
