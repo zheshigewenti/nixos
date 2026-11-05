@@ -21,7 +21,6 @@
     gnome-font-viewer
     baobab
     simple-scan
-    decibels
     gnome-characters 
     gnome-initial-setup
     gnome-user-share

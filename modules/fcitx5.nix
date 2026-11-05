@@ -2,7 +2,7 @@
   environment.sessionVariables = {
     QT_IM_MODULE = "fcitx";
     GTK_IM_MODULE = "fcitx";
-
+    XMODIFIERS = "@im=fcitx";
     NIXOS_OZONE_WL = "1";
   };
 
