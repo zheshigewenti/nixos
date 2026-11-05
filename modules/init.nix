@@ -3,6 +3,7 @@
     ./boot.nix
     ./nix.nix
     ./network.nix
+    ./clash.nix
     ./gnome.nix
     ./graphics.nix
     ./packages.nix

@@ -30,7 +30,6 @@ in {
       # 办公与日常
       google-chrome
       opencodeFixed
-      clash-verge-rev
       wpsoffice-cn
       # zotero
       wget
