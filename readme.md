@@ -1,11 +1,10 @@
-## 软件
+## 安装
 
 ```shell
-
-sudo nixos-generate-config --show-hardware-config > hosts/xps-hardware.nix
+cd /home/vincent/nixos
 nix run nixpkgs#git -- clone https://github.com/zheshigewenti/nixos.git
 sudo chown -R vincent:users /home/vincent/nixos
-cd /home/vincent/nixos
+sudo nixos-generate-config --show-hardware-config > hosts/xps-hardware.nix
 
 # 更新flake
 nix flake update
