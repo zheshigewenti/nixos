@@ -1,9 +1,14 @@
-# NixOS 配置
-
-## 日常部署
+## 软件
 
 ```shell
+
+sudo nixos-generate-config --show-hardware-config > hosts/xps-hardware.nix
+nix run nixpkgs#git -- clone https://github.com/zheshigewenti/nixos.git
+sudo chown -R vincent:users /home/vincent/nixos
 cd /home/vincent/nixos
+
+# 更新flake
+nix flake update
 
 # 验证部署
 sudo nixos-rebuild build --flake .#xps
@@ -16,19 +21,6 @@ ALL_PROXY=socks5://127.0.0.1:7897 sudo -E nixos-rebuild switch --flake .#xps
 
 # 远程部署
 sudo nixos-rebuild switch --flake github:zheshigewenti/nixos#xps
-```
-
-## 更新
-
-```shell
-# 更新flake
-nix flake update
-```
-## 硬件与引导
-
-```shell
-# 重新生成当前机器的硬件配置
-sudo nixos-generate-config --show-hardware-config > hosts/xps-hardware.nix
 
 # 重新安装 systemd-boot
 sudo nixos-rebuild boot --install-bootloader
@@ -59,16 +51,6 @@ sudo nix store optimise
 # 清理日志
 sudo journalctl --rotate
 sudo journalctl --vacuum-time=7d
-```
-
-
-## 临时下载仓库
-
-```shell
-nix run nixpkgs#git -- clone https://github.com/zheshigewenti/nixos.git
-
-# 如果文件属主不对
-sudo chown -R vincent:users /home/vincent/nixos
 ```
 
 ## 目录
