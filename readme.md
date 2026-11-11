@@ -1,34 +1,13 @@
-## 安装
-
-### desktop（通用模板，nixos-anywhere）
-
-`hosts/desktop.nix` 就是通用模板，磁盘布局和 xps 一致：
-
-- GPT 分区表
-- `ESP`：1G，vfat，挂到 `/boot`
-- `root`：剩余空间，ext4，挂到 `/`
-- 不建 swap，使用 `zramSwap`
-
 每台新机器装之前，把 `hosts/desktop.nix` 里的 `my.disk.device` 改成目标磁盘（`lsblk` 确认；U 盘可能是 `/dev/sda`，内置盘可能是 `/dev/sdb`）。
-
-目标机启动 NixOS ISO、联网后：
-
-```shell
 passwd root
 systemctl start sshd
 ip a
-```
-
-在 xps 上（**必须在仓库根目录执行**）：
-
-```shell
 cd /home/vincent/nixos
 nix run github:nix-community/nixos-anywhere -- \
   --build-on local \
   --generate-hardware-config nixos-facter hosts/desktop-facter.json \
   --flake "path:$PWD#desktop" \
   root@<IP>
-```
 
 - `--build-on local` 在 xps 上构建（能用本地代理），之后整个闭包推到目标机。
 - `--generate-hardware-config nixos-facter` 让 nixos-anywhere **在目标机上自动生成硬件报告**，写到 `hosts/desktop-facter.json`，不用手动复制。
