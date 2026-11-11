@@ -11,6 +11,9 @@ in {
     description = "vincent";
     extraGroups = ["networkmanager" "wheel"];
     shell = pkgs.zsh;
+    # 通用安装模板的初始密码：首次登录后立刻 passwd 改掉。
+    # initialPassword 只在用户第一次创建时生效，不会重置已有的 xps。
+    initialPassword = "1234";
     packages = with pkgs; [
       # TeX 环境
       (texliveSmall.withPackages (ps:
