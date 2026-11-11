@@ -19,17 +19,8 @@ nix run github:nix-community/nixos-anywhere -- \
 - 只支持 UEFI；Legacy BIOS 需要把 `modules/disko.nix` 改成 MBR，并把 `modules/boot.nix` 的 systemd-boot 换成 GRUB。
 - `desktop.nix` 里还有 NVIDIA 配置，装到非 NVIDIA 机器时先删掉那一段。
 
-#### 硬件配置（facter）
-
-`hosts/desktop.nix` 用社区标准的 facter 写法，硬件信息来自 `hosts/desktop-facter.json`：
-
-```nix
-# hosts/desktop.nix
-hardware.facter.reportPath = ./desktop-facter.json;
-```
-
-- `hosts/desktop-facter.json` 由 nixos-facter 生成，**必须提交进仓库**。
-- 重新生成（在目标机上）：
+#### facter
+ 重新生成
   ```shell
   nix run github:nix-community/nixos-facter > hosts/desktop-facter.json
   ```
