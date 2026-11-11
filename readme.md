@@ -20,7 +20,6 @@ nix run github:nix-community/nixos-anywhere -- \
 - `desktop.nix` 里还有 NVIDIA 配置，装到非 NVIDIA 机器时先删掉那一段。
 
 #### facter
- 重新生成
   ```shell
   nix run github:nix-community/nixos-facter > hosts/desktop-facter.json
   ```
@@ -36,10 +35,6 @@ sudo chown -R vincent:users /home/vincent/nixos
 sudo nixos-generate-config --show-hardware-config > hosts/xps-hardware.nix
 # 更新flake
 nix flake update
-```
-
-
-```shell
 # 验证部署
 sudo nixos-rebuild build --flake .#xps
 # 实际部署
