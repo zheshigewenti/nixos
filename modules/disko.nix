@@ -18,6 +18,7 @@
     disk.main = {
       type = "disk";
       device = config.my.disk.device;
+      destroy = true;
       content = {
         type = "gpt";
         partitions = {

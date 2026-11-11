@@ -19,19 +19,42 @@ systemctl start sshd
 ip a
 ```
 
-在 xps 上：
+在 xps 上（**必须在仓库根目录执行**）：
 
 ```shell
+cd /home/vincent/nixos
 nix run github:nix-community/nixos-anywhere -- \
+  --build-on local \
+  --generate-hardware-config nixos-facter hosts/desktop-facter.json \
   --flake "path:$PWD#desktop" \
   root@<IP>
 ```
 
+- `--build-on local` 在 xps 上构建（能用本地代理），之后整个闭包推到目标机。
+- `--generate-hardware-config nixos-facter` 让 nixos-anywhere **在目标机上自动生成硬件报告**，写到 `hosts/desktop-facter.json`，不用手动复制。
 - `path:$PWD` 让 flake 看到本地未提交的改动。
 - 会清空 `my.disk.device` 指向的整块磁盘。
 - 初始密码 `1234`，第一次登录后执行 `passwd` 改掉。
+- 装完 openssh 已启用，可以直接 `ssh vincent@<IP>`（需先在 `keys/desktop-authorized-keys.nix` 填入公钥）。
 - 只支持 UEFI；Legacy BIOS 需要把 `modules/disko.nix` 改成 MBR，并把 `modules/boot.nix` 的 systemd-boot 换成 GRUB。
 - `desktop.nix` 里还有 NVIDIA 配置，装到非 NVIDIA 机器时先删掉那一段。
+
+#### 硬件配置（facter）
+
+`hosts/desktop.nix` 用社区标准的 facter 写法，硬件信息来自 `hosts/desktop-facter.json`：
+
+```nix
+# hosts/desktop.nix
+hardware.facter.reportPath = ./desktop-facter.json;
+```
+
+- `hosts/desktop-facter.json` 由 nixos-facter 生成，**必须提交进仓库**。
+- 重新生成（在目标机上）：
+  ```shell
+  nix run github:nix-community/nixos-facter > hosts/desktop-facter.json
+  ```
+- 硬件变化（换盘、换主板、换整台机器）后要重新生成；只改软件不用。
+- xps 仍用 `nixos-generate-config` 生成的 `hosts/xps-hardware.nix`（含 `fileSystems`，因为不走 disko）。
 
 ### xps（沿用现有分区，UUID）
 
@@ -117,7 +140,10 @@ hosts/
   configurations.nix  # flake-parts host 定义
   xps.nix
   xps-hardware.nix
-  desktop.nix         # 通用安装模板（disko + nixos-anywhere）
-  desktop-hardware.nix
+  desktop.nix         # 通用安装模板（disko + nixos-anywhere + facter）
+  desktop-facter.json # desktop 的硬件报告（nixos-facter 生成）
+keys/
+  desktop-authorized-keys.nix
+                      # desktop 的 SSH 公钥（装完即可远程登录）
 ```
 

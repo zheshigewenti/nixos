@@ -5,7 +5,6 @@
 }: {
   imports = [
     ../modules/disko.nix
-    ./desktop-hardware.nix
   ];
 
   networking.hostName = "desktop";
@@ -13,7 +12,14 @@
   system.stateVersion = "25.11";
 
   # 通用模板：每台机器装之前把这里改成目标磁盘（lsblk 确认）
-  my.disk.device = "/dev/nvme0n1";
+  my.disk.device = "/dev/sda";
+
+  # 硬件配置由 nixos-facter 生成的报告提供。
+  # 生成方式（在目标机上）：
+  #   nix run github:nix-community/nixos-facter > hosts/desktop-facter.json
+  # 或在安装时让 nixos-anywhere 远程生成：
+  #   --generate-hardware-config nixos-facter hosts/desktop-facter.json
+  hardware.facter.reportPath = ./desktop-facter.json;
 
   # 通用模板：Intel / AMD 微码都带上，其余存储模块交给内核默认值
   hardware.cpu.intel.updateMicrocode = lib.mkDefault true;
@@ -24,13 +30,14 @@
   # 装在 SSD 上时把这行删掉即可恢复默认。
   services.fstrim.enable = lib.mkDefault false;
 
-  # 注意：这段是 NVIDIA 专用。装到非 NVIDIA 机器上时删掉/注释掉。
-  # services.xserver.videoDrivers = ["nvidia"];
-  # hardware.nvidia = {
-  #   modesetting.enable = true;
-  #   powerManagement.enable = false;
-  #   open = true;
-  #   nvidiaSettings = true;
-  #   package = config.boot.kernelPackages.nvidiaPackages.stable;
-  # };
+  # 装完即可远程访问，以后不用再碰实体机。
+  services.openssh = {
+    enable = true;
+    settings.PermitRootLogin = "prohibit-password";
+  };
+  # 公钥放在 keys/desktop-authorized-keys.nix；为空时不设置。
+  users.users.vincent.openssh.authorizedKeys.keys =
+    lib.mkIf ((import ../keys/desktop-authorized-keys.nix) != [])
+    (import ../keys/desktop-authorized-keys.nix);
+
 }
