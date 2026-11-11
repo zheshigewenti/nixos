@@ -1,5 +1,5 @@
 每台新机器装之前，把 `hosts/desktop.nix` 里的 `my.disk.device` 改成目标磁盘（`lsblk` 确认；U 盘可能是 `/dev/sda`，内置盘可能是 `/dev/sdb`）。
-```
+```shell
 passwd root
 systemctl start sshd
 ip a
@@ -61,7 +61,7 @@ sudo nixos-rebuild switch --flake github:zheshigewenti/nixos#xps
 sudo nixos-rebuild boot --install-bootloader
 ```
 
-## 版本回滚
+#### 回滚
 
 ```shell
 # 列出系统 generation
@@ -72,7 +72,7 @@ sudo nix-env --delete-generations +2 --profile /nix/var/nix/profiles/system
 sudo nixos-rebuild switch --rollback
 ```
 
-## 清理
+#### 清理
 
 ```shell
 # 删除旧 generation 并执行 GC
@@ -84,7 +84,7 @@ sudo journalctl --rotate
 sudo journalctl --vacuum-time=7d
 ```
 
-## 目录
+#### 目录
 
 ```text
 flake.nix
