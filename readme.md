@@ -1,3 +1,4 @@
+#### anywhere
 每台新机器装之前，把 `hosts/desktop.nix` 里的 `my.disk.device` 改成目标磁盘（`lsblk` 确认；U 盘可能是 `/dev/sda`，内置盘可能是 `/dev/sdb`）。
 ```shell
 passwd root
@@ -31,7 +32,7 @@ nix run github:nix-community/nixos-anywhere -- \
 cd /home/vincent/nixos
 nix run nixpkgs#git -- clone https://github.com/zheshigewenti/nixos.git
 sudo chown -R vincent:users /home/vincent/nixos
-# 重新生成硬件配置（包含 fileSystems，xps 不走 disko）
+# 重新生成硬件配置（包含fileSystems，xps不走disko）
 sudo nixos-generate-config --show-hardware-config > hosts/xps-hardware.nix
 # 更新flake
 nix flake update
@@ -50,20 +51,20 @@ sudo nixos-rebuild boot --install-bootloader
 #### 回滚
 
 ```shell
-# 列出系统 generation
+# 列出系统generation
 sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
-# 只保留最后 2 个 generation
+# 只保留最后2个generation
 sudo nix-env --delete-generations +2 --profile /nix/var/nix/profiles/system
-# 回滚到上一个 generation
+# 回滚到上一个generation
 sudo nixos-rebuild switch --rollback
 ```
 
 #### 清理
 
 ```shell
-# 删除旧 generation 并执行 GC
+# 删除旧generation并执行GC
 sudo nix-collect-garbage -d
-# 对 store 做硬链接去重
+# 对store做硬链接去重
 sudo nix store optimise
 # 清理日志
 sudo journalctl --rotate
@@ -95,9 +96,9 @@ hosts/
   xps.nix
   xps-hardware.nix
   desktop.nix         # 通用安装模板（disko + nixos-anywhere + facter）
-  desktop-facter.json # desktop 的硬件报告（nixos-facter 生成）
+  desktop-facter.json # desktop的硬件报告（nixos-facter 生成）
 keys/
   desktop-authorized-keys.nix
-                      # desktop 的 SSH 公钥（装完即可远程登录）
+                      # desktop的SSH公钥（装完即可远程登录）
 ```
 
