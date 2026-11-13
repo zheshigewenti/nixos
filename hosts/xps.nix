@@ -18,11 +18,7 @@
   ];
 
   # xps 需要的远程访问
-  networking.firewall.allowedTCPPorts = [3389];
-  networking.firewall.allowedUDPPorts = [3389];
-
   services.openssh.enable = true;
-  services.gnome.gnome-remote-desktop.enable = true;
 
   # Intel 笔记本电源/温度管理
   services.thermald.enable = true;
